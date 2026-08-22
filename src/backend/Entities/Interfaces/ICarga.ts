@@ -1,3 +1,5 @@
+import { IHistoricoCarga } from "./IHistoricoCarga";
+import { IProdutoQuimico } from "./IProdutoQuimico";
 export interface ICarga {
       id: string;
       status: enumStatusCarga;

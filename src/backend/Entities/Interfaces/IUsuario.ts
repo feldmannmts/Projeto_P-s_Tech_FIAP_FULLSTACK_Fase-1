@@ -4,8 +4,6 @@ interface IUsuario {
       email: string;
       senha: string;
       perfilUsuario: IPerfilUsuario;
-
-      //autenticarUsuario(): boolean;
 }
 
 interface IPerfilUsuario {
