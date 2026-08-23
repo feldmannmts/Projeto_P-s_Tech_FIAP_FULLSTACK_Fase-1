@@ -1,7 +1,7 @@
 import { IHistoricoCarga } from "./IHistoricoCarga";
 import { IProdutoQuimico } from "./IProdutoQuimico";
 import { IUsuario } from "./IUsuario";
-export interface ICarga {
+export interface ICargaQuimica {
       id: string;
       status: enumStatusCarga;
       listaProduto: IProdutoQuimico[];

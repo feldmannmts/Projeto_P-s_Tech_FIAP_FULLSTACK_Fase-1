@@ -1,8 +1,8 @@
 import { IProdutoQuimico } from "./Interfaces/IProdutoQuimico";
 import { IHistoricoCarga } from "./Interfaces/IHistoricoCarga";
-import { ICarga, enumStatusCarga } from "./Interfaces/ICargaQuimica";
+import { ICargaQuimica, enumStatusCarga } from "./Interfaces/ICargaQuimica";
 import {IUsuario} from "./Interfaces/IUsuario";
-class Carga implements ICarga {
+class CargaQuimica implements ICargaQuimica {
       id = '';
       status = enumStatusCarga.EMPTY;
       listaProduto = [] as IProdutoQuimico[];

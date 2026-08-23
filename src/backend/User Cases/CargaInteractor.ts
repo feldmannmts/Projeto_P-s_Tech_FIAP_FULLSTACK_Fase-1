@@ -1,9 +1,9 @@
-import { ICarga, enumStatusCarga } from "../Entities/Interfaces/ICargaQuimica";
+import { ICargaQuimica, enumStatusCarga } from "../Entities/Interfaces/ICargaQuimica";
 
 class CargaInteractor {
-      carga!: ICarga;
+      carga!: ICargaQuimica;
 
-      CargaController(_carga: ICarga) {
+      CargaController(_carga: ICargaQuimica) {
             this.carga = _carga;
       }
 

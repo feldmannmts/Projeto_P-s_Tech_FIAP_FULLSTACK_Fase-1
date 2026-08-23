@@ -1,12 +1,12 @@
 import {IVeiculo, enumTipoVeiculo} from "./Interfaces/IVeiculo";
-import {ICarga} from "./Interfaces/ICargaQuimica";
+import {ICargaQuimica} from "./Interfaces/ICargaQuimica";
 
 
 class Veiculo {
       id = '';
       tipoVeiculo!: enumTipoVeiculo;
       status = '';
-      cargasCarregadas: ICarga[] = [];
+      cargasCarregadas: ICargaQuimica[] = [];
 
       constructor(_id: string, _tipoVeiculo: enumTipoVeiculo, _status: string) {
             this.id = _id;
@@ -14,11 +14,11 @@ class Veiculo {
             this.status = _status;
       }
 
-      carregarCarga(carga: ICarga): void {
+      carregarCarga(carga: ICargaQuimica): void {
             this.cargasCarregadas.push(carga);
       }
 
-      descarregarCarga(carga: ICarga): void {
+      descarregarCarga(carga: ICargaQuimica): void {
             this.cargasCarregadas = this.cargasCarregadas.filter(c => c !== carga);
       }
 

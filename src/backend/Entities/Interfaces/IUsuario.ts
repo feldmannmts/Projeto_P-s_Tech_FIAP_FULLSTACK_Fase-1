@@ -8,14 +8,14 @@ export interface IUsuario {
 export interface IPerfilUsuario {
       nomePerfil: string;
       descricaoPerfil: string;
-      nivelAcesso: NivelAcesso;
+      nivelAcesso: enumNivelAcesso;
       usuario: IUsuario;
 }
 
-export enum NivelAcesso {
+export enum enumNivelAcesso {
       ADMINISTRADOR = "ADMINISTRADOR",
       GESTOR_OPERACIONAL = "GESTOR_OPERACIONAL",
       RESPONSAVEL_TECNICO = "RESPONSAVEL_TECNICO",
-      OPERADOR_PORTUARIO = "OPERADOR_PORTUARIO",    
       INSPETOR_QUALIDADE = "INSPETOR_QUALIDADE",
+      OPERADOR_PORTUARIO = "OPERADOR_PORTUARIO",    
 }
