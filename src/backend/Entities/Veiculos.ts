@@ -1,37 +1,17 @@
 import {IVeiculo, enumTipoVeiculo} from "./Interfaces/IVeiculo";
-import {ICarga} from "./Interfaces/ICarga";
+import {ICarga} from "./Interfaces/ICargaQuimica";
 
-class Navio implements IVeiculo {
+
+class Veiculo {
       id = '';
-      tipoVeiculo = enumTipoVeiculo.NAVIO;
+      tipoVeiculo!: enumTipoVeiculo;
       status = '';
       cargasCarregadas: ICarga[] = [];
 
-      constructor(_id: string) {
+      constructor(_id: string, _tipoVeiculo: enumTipoVeiculo, _status: string) {
             this.id = _id;
-      }
-
-      carregarCarga(carga: ICarga): void {
-            this.cargasCarregadas.push(carga);
-      }
-
-      descarregarCarga(carga: ICarga): void {
-            this.cargasCarregadas = this.cargasCarregadas.filter(c => c !== carga);
-      }
-
-      alterarStatus(status: string): void {
-            this.status = status;
-      }
-}
-
-class Caminhao implements IVeiculo {
-      id = '';
-      tipoVeiculo = enumTipoVeiculo.CAMINHAO;
-      status = '';
-      cargasCarregadas: ICarga[] = [];
-
-      constructor(_id: string) {
-            this.id = _id;
+            this.tipoVeiculo = _tipoVeiculo;
+            this.status = _status;
       }
 
       carregarCarga(carga: ICarga): void {

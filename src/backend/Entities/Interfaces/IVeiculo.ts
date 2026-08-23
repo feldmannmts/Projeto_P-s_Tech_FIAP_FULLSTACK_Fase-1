@@ -1,13 +1,13 @@
-import { ICarga } from "./ICarga";
+import { ICarga as ICargaQuimica } from "./ICargaQuimica";
 
 export interface IVeiculo{
       id: string;
       tipoVeiculo: enumTipoVeiculo;
       status: string;
-      cargasCarregadas: ICarga[];
+      cargasCarregadas: ICargaQuimica[];
       
-      carregarCarga(carga: ICarga): void;
-      descarregarCarga(carga: ICarga): void;
+      carregarCarga(carga: ICargaQuimica): void;
+      descarregarCarga(carga: ICargaQuimica): void;
       alterarStatus(status: string): void;
 }
 
