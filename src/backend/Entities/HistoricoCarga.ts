@@ -1,4 +1,4 @@
-import { IHistoricoCarga, IAtualizacao } from "./Interfaces/IHistoricoCarga";
+import { IHistoricoCarga, IAtualizacao } from "./Aggregate Interfaces/IHistoricoCarga";
 
 class HistoricoCarga implements IHistoricoCarga {
       listaAtualizacoes;

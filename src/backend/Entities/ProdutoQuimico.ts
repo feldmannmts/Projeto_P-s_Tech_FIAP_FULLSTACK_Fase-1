@@ -1,4 +1,4 @@
-import { enumClasseRisco, IProdutoQuimico } from "./Interfaces/IProdutoQuimico";
+import { enumClasseRisco, IProdutoQuimico } from "./Domain Interfaces/IProdutoQuimico";
 
 class ProdutoQuimico implements IProdutoQuimico {
       nome = '';
@@ -13,10 +13,5 @@ class ProdutoQuimico implements IProdutoQuimico {
             this.ativo = _ativo;
       }
 
-      ativarProduto(): void {
-            this.ativo = true;
-      }
-      desativarProduto(): void {
-            this.ativo = false;
-      }
+
 }

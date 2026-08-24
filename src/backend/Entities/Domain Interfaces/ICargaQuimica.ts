@@ -1,6 +1,7 @@
-import { IHistoricoCarga } from "./IHistoricoCarga";
-import { IProdutoQuimico } from "./IProdutoQuimico";
-import { IUsuario } from "./IUsuario";
+import { IHistoricoCarga } from "../Aggregate Interfaces/IHistoricoCarga";
+import { EspacoArmazenamento } from "../AreaArmazenamento";
+import { IProdutoQuimico } from "../Domain Interfaces/IProdutoQuimico";
+import { IUsuario } from "../Domain Interfaces/IUsuario";
 export interface ICargaQuimica {
       id: string;
       status: enumStatusCarga;
@@ -8,6 +9,7 @@ export interface ICargaQuimica {
       histórico: IHistoricoCarga;
       listaDocumentosCarga: IDocumentoCarga[];
       responsavelTecnico: IUsuario;
+      espacoArmazenamento?: EspacoArmazenamento;
 }
 
 export enum enumStatusCarga {

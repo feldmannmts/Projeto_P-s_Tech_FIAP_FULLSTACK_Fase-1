@@ -1,4 +1,4 @@
-import { ICargaQuimica as ICargaQuimica } from "./ICargaQuimica";
+import { ICargaQuimica as ICargaQuimica } from "../Domain Interfaces/ICargaQuimica";
 
 export interface IVeiculo{
       id: string;

@@ -1,13 +1,13 @@
-import { ICargaQuimica } from "./Interfaces/ICargaQuimica";
+import { ICargaQuimica } from "./Domain Interfaces/ICargaQuimica";
 
-class AreaArmazenamento{
-      areaArmazenamento: SetorArmazenamento[] = [];
-      constructor(_areaArmazenamento: SetorArmazenamento[]) {
-            this.areaArmazenamento = _areaArmazenamento;
+export class AreaArmazenamento{
+      listaDeSetores: SetorArmazenamento[] = [];
+      constructor(_listaDeSetores: SetorArmazenamento[]) {
+            this.listaDeSetores = _listaDeSetores;
       }
 }
 
-class SetorArmazenamento{
+export class SetorArmazenamento{
       id: string;
       nome: string;
       descricao: string;
@@ -19,11 +19,12 @@ class SetorArmazenamento{
       }
 }
 
-class EspacoArmazenamento{
+export class EspacoArmazenamento{
       id: string;
       nome: string;
       statusOcupado: boolean;
       CargaArmazenada?: ICargaQuimica;
+      
       constructor(_id: string, _nome: string, _statusOcupado: boolean) {
             this.id = _id;
             this.nome = _nome;
@@ -31,18 +32,18 @@ class EspacoArmazenamento{
             this.CargaArmazenada = undefined;
       }
 
-      AlterarStatusOcupado(): void {
+      alterarStatusOcupado(): void {
             this.statusOcupado = this.statusOcupado ? false : true;
       }
 
-      ArmazenarCarga(carga: ICargaQuimica): void {
+      armazenarCarga(carga: ICargaQuimica): void {
             if (!this.statusOcupado) {
                   this.CargaArmazenada = carga;
                   this.statusOcupado = true;
             }
       }
 
-      RemoverCarga(): void {
+      removerCarga(): void {
             if (this.statusOcupado) {
                   this.CargaArmazenada = undefined;
                   this.statusOcupado = false;

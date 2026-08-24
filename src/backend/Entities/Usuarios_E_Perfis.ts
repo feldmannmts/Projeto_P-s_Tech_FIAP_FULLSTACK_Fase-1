@@ -1,6 +1,6 @@
-import {IPerfilUsuario, IUsuario, enumNivelAcesso} from "./Interfaces/IUsuario";
+import {IPerfilUsuario, IUsuario, enumNivelAcesso} from "./Domain Interfaces/IUsuario";
 
-class Usuario implements IUsuario {
+class UsuarioData implements IUsuario {
       id = '';
       nome = '';
       email = '';
@@ -15,57 +15,17 @@ class Usuario implements IUsuario {
 }
 
 
-class Administrador implements IPerfilUsuario {
-      nomePerfil = 'Administrador';
-      descricaoPerfil = 'Administrador do Sistema';
+class Usuario implements IPerfilUsuario {
+      nomePerfil = '';
+      descricaoPerfil = '';
       nivelAcesso = enumNivelAcesso.ADMINISTRADOR;
       usuario = {} as IUsuario;
 
-      constructor( _usuario: IUsuario) {
+      constructor(_nomePerfil: string, _descricaoPerfil: string, _nivelAcesso: enumNivelAcesso, _usuario: IUsuario) {
+            this.nomePerfil = _nomePerfil;
+            this.descricaoPerfil = _descricaoPerfil;
+            this.nivelAcesso = _nivelAcesso;
             this.usuario = _usuario;
       }
-}
 
-class GestorOperacional implements IPerfilUsuario {
-      nomePerfil = 'Gestor Operacional';
-      descricaoPerfil = 'Gestor Operacional do Sistema';
-      nivelAcesso = enumNivelAcesso.GESTOR_OPERACIONAL;
-      usuario = {} as IUsuario;
-
-      constructor( _usuario: IUsuario) {
-            this.usuario = _usuario;
-      }
-}
-
-class ResponsavelTecnico implements IPerfilUsuario {
-      nomePerfil = 'Responsável Técnico';
-      descricaoPerfil = 'Responsável Técnico da Carga Química';
-      nivelAcesso = enumNivelAcesso.RESPONSAVEL_TECNICO;
-      usuario = {} as IUsuario;
-
-      constructor(_usuario: IUsuario) {
-            this.usuario = _usuario;
-      }
-}
-
-class InspetorQualidade implements IPerfilUsuario {
-      nomePerfil = 'Inspetor de Qualidade';
-      descricaoPerfil = 'Inspetor de Qualidade do Sistema';
-      nivelAcesso = enumNivelAcesso.INSPETOR_QUALIDADE;
-      usuario = {} as IUsuario;
-
-      constructor(_usuario: IUsuario) {
-            this.usuario = _usuario;
-      }
-}
-
-class OperadorPortuario implements IPerfilUsuario {
-      nomePerfil = 'Operador Portuário';
-      descricaoPerfil = 'Operador Portuário do Sistema';
-      nivelAcesso = enumNivelAcesso.OPERADOR_PORTUARIO;
-      usuario = {} as IUsuario;
-
-      constructor(_usuario: IUsuario) {
-            this.usuario = _usuario;
-      }
 }

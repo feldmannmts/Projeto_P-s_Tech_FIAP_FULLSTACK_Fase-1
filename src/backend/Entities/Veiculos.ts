@@ -1,5 +1,5 @@
-import {IVeiculo, enumTipoVeiculo} from "./Interfaces/IVeiculo";
-import {ICargaQuimica} from "./Interfaces/ICargaQuimica";
+import {IVeiculo, enumTipoVeiculo} from "./Aggregate Interfaces/IVeiculo";
+import {ICargaQuimica} from "./Domain Interfaces/ICargaQuimica";
 
 
 class Veiculo {
