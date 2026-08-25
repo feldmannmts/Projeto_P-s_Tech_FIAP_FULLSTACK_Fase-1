@@ -9,7 +9,7 @@ export interface ICargaQuimica {
       histórico: IHistoricoCarga;
       listaDocumentosCarga: IDocumentoCarga[];
       responsavelTecnico: IUsuario;
-      espacoArmazenamento?: EspacoArmazenamento;
+      espacoArmazenamento: EspacoArmazenamento;
 }
 
 export enum enumStatusCarga {
