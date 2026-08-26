@@ -1,14 +1,14 @@
 import { IHistoricoCarga } from "../Aggregate Interfaces/IHistoricoCarga";
 import { EspacoArmazenamento } from "../AreaArmazenamento";
 import { IProdutoQuimico } from "../Domain Interfaces/IProdutoQuimico";
-import { IUsuario } from "../Domain Interfaces/IUsuario";
+import { IUsuario, IPerfilUsuario } from "../Domain Interfaces/IUsuario";
 export interface ICargaQuimica {
       id: string;
       status: enumStatusCarga;
       listaProduto: IProdutoQuimico[];
       histórico: IHistoricoCarga;
       listaDocumentosCarga: IDocumentoCarga[];
-      responsavelTecnico: IUsuario;
+      responsavelTecnico: IPerfilUsuario;
       espacoArmazenamento: EspacoArmazenamento;
 }
 
