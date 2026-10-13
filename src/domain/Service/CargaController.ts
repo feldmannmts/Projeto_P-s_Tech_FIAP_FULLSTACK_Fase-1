@@ -1,6 +1,6 @@
 import { EspacoArmazenamento } from "../Entities/AreaArmazenamento";
-import { ICargaQuimica, enumStatusCarga } from "../Entities/Domain Interfaces/ICargaQuimica";
-
+import { ICargaQuimica } from "../Entities/Domain Interfaces/ICargaQuimica";
+import { enumStatusCarga } from "../enums/enumStatusCarga";
 class CargaController {
 
       liberarCarga(_carga: ICargaQuimica): void {

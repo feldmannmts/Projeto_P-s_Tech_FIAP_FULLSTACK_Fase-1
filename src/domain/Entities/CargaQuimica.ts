@@ -1,8 +1,9 @@
 import { IProdutoQuimico } from "./Domain Interfaces/IProdutoQuimico";
 import { IHistoricoCarga } from "./Aggregate Interfaces/IHistoricoCarga";
-import { ICargaQuimica, enumStatusCarga } from "./Domain Interfaces/ICargaQuimica";
+import { ICargaQuimica} from "./Domain Interfaces/ICargaQuimica";
 import {IPerfilUsuario, IUsuario} from "./Domain Interfaces/IUsuario";
 import { EspacoArmazenamento } from "./AreaArmazenamento";
+import { enumStatusCarga } from "../enums/enumStatusCarga";
 export class CargaQuimica implements ICargaQuimica {
       id = '';
       status = enumStatusCarga.EMPTY;

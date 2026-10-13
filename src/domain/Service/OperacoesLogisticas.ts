@@ -1,5 +1,6 @@
 import { IHistoricoCarga } from "../Entities/Aggregate Interfaces/IHistoricoCarga";
-import { ICargaQuimica, enumStatusCarga } from "../Entities/Domain Interfaces/ICargaQuimica";
+import { ICargaQuimica } from "../Entities/Domain Interfaces/ICargaQuimica";
+import { enumStatusCarga } from "../enums/enumStatusCarga";
 import { IProdutoQuimico } from "../Entities/Domain Interfaces/IProdutoQuimico";
 import { enumNivelAcesso, IPerfilUsuario, IUsuario } from "../Entities/Domain Interfaces/IUsuario";
 import { CargaQuimica } from "../Entities/CargaQuimica";
@@ -10,7 +11,6 @@ class OperacoesLogisticas {
       ValidarCargo (_usuario: IPerfilUsuario, _cargoPermitido: string): boolean {
             return _usuario.nivelAcesso === _cargoPermitido;
       }
-     
 
 
       ReceberCarga (_carga: ICargaQuimica, _usuario:IPerfilUsuario , _espacoArmazenamento: EspacoArmazenamento) {

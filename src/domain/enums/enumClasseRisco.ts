@@ -1,14 +1,3 @@
-export interface IProdutoQuimico{
-      codigo: string;
-      nome: string;
-      classeRisco: enumClasseRisco;
-      ativo: boolean;
-
-      // cadastrarProduto(): void;
-      // ativarProduto(): void;
-      // desativarProduto(): void;
-}
-
 export const enum enumClasseRisco {
       //FONTE: https://www.fepam.rs.gov.br/upload/arquivos/202212/26133322-manual-classificacao-produto-perigoso.pdf
       NENHUM = "NENHUM",

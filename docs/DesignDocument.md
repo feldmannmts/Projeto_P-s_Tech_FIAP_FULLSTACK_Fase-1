@@ -836,6 +836,8 @@ quimiport/
 │   │   │   └── registro-profissional.vo.ts
 │   │   ├── enums/
 │   │   │   └── status-carga.enum.ts
+│   │   │   └── tipo-veiculo.enum.ts
+│   │   │   └── status-carga.enum.ts
 │   │   ├── exceptions/
 │   │   │   └── domain.exception.ts
 │   │   └── services/

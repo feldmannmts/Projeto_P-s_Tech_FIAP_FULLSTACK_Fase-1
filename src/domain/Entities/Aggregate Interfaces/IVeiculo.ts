@@ -1,3 +1,4 @@
+import { enumTipoVeiculo } from "../../enums/enumTipoVeiculo";
 import { ICargaQuimica as ICargaQuimica } from "../Domain Interfaces/ICargaQuimica";
 
 export interface IVeiculo{
@@ -11,7 +12,3 @@ export interface IVeiculo{
       alterarStatus(status: string): void;
 }
 
-export enum enumTipoVeiculo {
-      CAMINHAO = "CAMINHAO",
-      NAVIO = "NAVIO",
-}

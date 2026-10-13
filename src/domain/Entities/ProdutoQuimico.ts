@@ -1,5 +1,5 @@
-import { enumClasseRisco, IProdutoQuimico } from "./Domain Interfaces/IProdutoQuimico";
-
+import { IProdutoQuimico } from "./Domain Interfaces/IProdutoQuimico";
+import{ enumClasseRisco } from "../enums/enumClasseRisco";
 class ProdutoQuimico implements IProdutoQuimico {
       nome = '';
       codigo = '';
