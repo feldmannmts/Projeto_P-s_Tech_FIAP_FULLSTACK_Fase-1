@@ -1,5 +1,5 @@
-import { IProdutoQuimico } from "../Entities/Domain Interfaces/IProdutoQuimico";
-import { enumClasseRisco } from "../enums/enumClasseRisco";
+import { IProdutoQuimico } from "../../domain/Entities/Domain Interfaces/IProdutoQuimico";
+import { enumClasseRisco } from "../../domain/enums/enumClasseRisco";
 
 class ProdutoQuimicoController {
       listaProdutosQuimicosCadastrados!: IProdutoQuimico[];

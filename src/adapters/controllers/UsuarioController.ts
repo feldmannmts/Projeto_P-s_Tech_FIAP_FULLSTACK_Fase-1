@@ -1,4 +1,4 @@
-import { IUsuario, IPerfilUsuario, enumNivelAcesso } from "../Entities/Domain Interfaces/IUsuario";
+import { IUsuario, IPerfilUsuario, enumNivelAcesso } from "../../domain/Entities/Domain Interfaces/IUsuario";
 
 class UsuariosController {
       listaPerfisCadastrados!: IPerfilUsuario[];

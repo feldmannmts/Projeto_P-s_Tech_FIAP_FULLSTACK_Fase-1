@@ -37,7 +37,7 @@ class OperacoesLogisticas {
       RemoverCarga (_carga: ICargaQuimica, _usuario:IPerfilUsuario): void {
             if(this.ValidarCargo(_usuario, enumNivelAcesso.OPERADOR_PORTUARIO)){
 
-                if (_carga.espacoArmazenamento.statusOcupado) {
+            if (_carga.espacoArmazenamento.statusOcupado) {
                   _carga.espacoArmazenamento.removerCarga();
                   _carga.espacoArmazenamento = {} as EspacoArmazenamento;
             }
@@ -49,9 +49,9 @@ class OperacoesLogisticas {
       }
 
       MoverCarga (_carga: ICargaQuimica,_usuario:IPerfilUsuario, _novoEspacoArmazenamento: EspacoArmazenamento): void {
-             
+
             if(this.ValidarCargo(_usuario, enumNivelAcesso.OPERADOR_PORTUARIO)){
-                 if (_carga.espacoArmazenamento.statusOcupado) {
+                  if (_carga.espacoArmazenamento.statusOcupado) {
                   _carga.espacoArmazenamento.removerCarga();
                   _carga.espacoArmazenamento = _novoEspacoArmazenamento;
                   _novoEspacoArmazenamento.armazenarCarga(_carga);
