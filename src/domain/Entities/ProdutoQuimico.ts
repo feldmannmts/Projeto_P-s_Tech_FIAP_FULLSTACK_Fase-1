@@ -1,6 +1,6 @@
 import { IProdutoQuimico } from "./Domain Interfaces/IProdutoQuimico";
 import{ enumClasseRisco } from "../enums/enumClasseRisco";
-class ProdutoQuimico implements IProdutoQuimico {
+export class ProdutoQuimico implements IProdutoQuimico {
       nome = '';
       codigo = '';
       classeRisco = enumClasseRisco.NENHUM;

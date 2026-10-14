@@ -1,8 +1,8 @@
 import { IHistoricoCarga } from "../Entities/Aggregate Interfaces/IHistoricoCarga";
 import { ICargaQuimica } from "../Entities/Domain Interfaces/ICargaQuimica";
 import { enumStatusCarga } from "../enums/enumStatusCarga";
-import { IProdutoQuimico } from "../Entities/Domain Interfaces/IProdutoQuimico";
-import { enumNivelAcesso, IPerfilUsuario, IUsuario } from "../Entities/Domain Interfaces/IUsuario";
+import { IPerfilUsuario } from "../Entities/Domain Interfaces/IUsuario";
+import { enumNivelAcesso } from "../enums/enumNivelAcesso";
 import { CargaQuimica } from "../Entities/CargaQuimica";
 import { EspacoArmazenamento } from "../Entities/AreaArmazenamento";
 import { IVeiculo } from "../Entities/Aggregate Interfaces/IVeiculo";
