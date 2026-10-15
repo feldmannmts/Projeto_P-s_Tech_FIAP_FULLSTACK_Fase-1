@@ -1,13 +1,10 @@
-import {AreaArmazenamento, SetorArmazenamento, EspacoArmazenamento} from "../Entities/AreaArmazenamento";
-import {ICargaQuimica} from "../Entities/Domain Interfaces/ICargaQuimica";
-
-class ArmazenamentoController {
+import {AreaArmazenamento, SetorArmazenamento, EspacoArmazenamento} from "../../domain/Entities/AreaArmazenamento";
+export class ArmazenamentoController {
       areaArmazenamento!: AreaArmazenamento;
 
       constructor(_areaArmazenamento: AreaArmazenamento) {
             this.areaArmazenamento = _areaArmazenamento;
       }
-
 
       //SETORES
       adicionarSetor(_setor: SetorArmazenamento): void {

@@ -11,10 +11,15 @@ export class AlocarCarga {
                   }
             } else {
                   //ERROR
+                        throw new Error("Usuário não possui permissão para alocar carga.");
+
             }
       }
 
-      private ValidarPerfil(_usuario: IPerfilUsuario, _nivelAcesso: enumNivelAcesso): boolean {
-            return _usuario.nivelAcesso === _nivelAcesso;
+      private ValidarPerfil(_usuario: IPerfilUsuario, nivelAcesso: enumNivelAcesso): boolean {
+            if (_usuario.nivelAcesso <= nivelAcesso) {
+                  return true;
+            }else
+                  return false;
       }
 }

@@ -8,10 +8,15 @@ export class ValidarDocumentacao {
                   _documento.validado = true;
             } else {
                   //ERROR
+                  throw new Error("Usuário não possui permissão para Validar Documentos da carga.");
+
             }
       }
 
-      private ValidarPerfil(_usuario: IPerfilUsuario, _nivelAcesso: enumNivelAcesso): boolean {
-            return _usuario.nivelAcesso === _nivelAcesso;
+      private ValidarPerfil(_usuario: IPerfilUsuario, nivelAcesso: enumNivelAcesso): boolean {
+            if (_usuario.nivelAcesso <= nivelAcesso) {
+                  return true;
+            }else
+                  return false;
       }
 }

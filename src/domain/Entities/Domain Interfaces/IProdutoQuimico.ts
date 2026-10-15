@@ -1,9 +1,14 @@
 import { enumClasseRisco } from "../../enums/enumClasseRisco";
+import { IHistorico } from "../Aggregate Interfaces/IHistorico";
 export interface IProdutoQuimico{
-      codigo: string;
+      id: string;
       nome: string;
+      descricao: string;
+      codigoONU: string;
       classeRisco: enumClasseRisco;
-      ativo: boolean;
+      grupoCompatibilidade: string;
+      statusAtivo: boolean;
+      historicoAtualizacoes: IHistorico;
 
       // cadastrarProduto(): void;
       // ativarProduto(): void;

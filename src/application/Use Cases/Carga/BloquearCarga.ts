@@ -9,10 +9,15 @@ export class BloquearCarga {
                   _carga.status = enumStatusCarga.BLOQUEADA;
       } else {
       // ERROR
+            throw new Error("Usuário não possui permissão para bloquear carga.");
+
       }
       }
 
       private ValidarPerfil(_usuario: IPerfilUsuario, nivelAcesso: enumNivelAcesso): boolean {
-            return true;
+            if (_usuario.nivelAcesso <= nivelAcesso) {
+                  return true;
+            }else
+                  return false;
       }
 }

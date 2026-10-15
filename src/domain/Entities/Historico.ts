@@ -1,15 +1,16 @@
-import { IHistoricoCarga, IAtualizacao } from "./Aggregate Interfaces/IHistoricoCarga";
+import { IHistorico} from "./Aggregate Interfaces/IHistorico";
+import { IHistoricoAtualizacao } from "./Aggregate Interfaces/IHistoricoAtualizacao";
 
-class HistoricoCarga implements IHistoricoCarga {
+export class Historico implements IHistorico {
       listaAtualizacoes;
 
       constructor() {
-            this.listaAtualizacoes = [] as IAtualizacao[];
+            this.listaAtualizacoes = [] as IHistoricoAtualizacao[];
       }
 
 }
 
-class Atualizacao implements IAtualizacao {
+export class Atualizacao implements IHistoricoAtualizacao {
       id = '';
       dataMudanca = new Date();
       horarioMudanca = '';

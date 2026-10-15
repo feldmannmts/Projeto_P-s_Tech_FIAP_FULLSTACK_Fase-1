@@ -9,10 +9,15 @@ export class RealizarInspecao {
                   _carga.status = enumStatusCarga.EM_INSPECAO;
       } else {
       // ERROR
+                  throw new Error("Usuário não possui permissão para realizar inspeção.");
+
       }
       }
 
       private ValidarPerfil(_usuario: IPerfilUsuario, nivelAcesso: enumNivelAcesso): boolean {
-            return true;
+            if (_usuario.nivelAcesso <= nivelAcesso) {
+                  return true;
+            }else
+                  return false;
       }
 }

@@ -4,17 +4,20 @@ import {IPerfilUsuario } from "../../../domain/Entities/Domain Interfaces/IUsuar
 import { enumNivelAcesso } from "../../../domain/enums/enumNivelAcesso";
 import { enumClasseRisco } from "../../../domain/enums/enumClasseRisco";
 
-class CadastrarProduto {
+export class CadastrarProduto {
       public executar(_nome: string, _codigo: string, _classeRisco: enumClasseRisco, _ativo: boolean, _usuario: IPerfilUsuario){
             if (this.ValidarPerfil(_usuario, enumNivelAcesso.ADMINISTRADOR)) {
-                  const novoProdutoQuimico: IProdutoQuimico = new ProdutoQuimico(_nome, _codigo, _classeRisco, _ativo);
+                  const novoProdutoQuimico: IProdutoQuimico = new ProdutoQuimico(_nome, _codigo, _classeRisco);
                   return novoProdutoQuimico;
             }
 
             throw new Error("Usuário não possui permissão para cadastrar produto.");
       }
 
-      private ValidarPerfil(_usuario: IPerfilUsuario, _nivelAcesso: enumNivelAcesso): boolean {
-            return _usuario.nivelAcesso === _nivelAcesso;
+      private ValidarPerfil(_usuario: IPerfilUsuario, nivelAcesso: enumNivelAcesso): boolean {
+            if (_usuario.nivelAcesso <= nivelAcesso) {
+                  return true;
+            }else
+                  return false;
       }
 }
