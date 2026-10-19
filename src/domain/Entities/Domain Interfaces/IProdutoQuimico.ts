@@ -10,8 +10,5 @@ export interface IProdutoQuimico{
       statusAtivo: boolean;
       historicoAtualizacoes: IHistorico;
 
-      // cadastrarProduto(): void;
-      // ativarProduto(): void;
-      // desativarProduto(): void;
 }
 

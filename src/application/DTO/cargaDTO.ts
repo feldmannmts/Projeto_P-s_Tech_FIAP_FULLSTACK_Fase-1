@@ -4,5 +4,5 @@ import {AtualizarStatusCarga} from "../Use Cases/Carga/AtualizarStatusCarga";
 
 
 export class CargaDTO{
-      listaDeCargas: ICargaQuimica[] = [];    
+      
 }

@@ -1,7 +1,10 @@
+import { IDocumentoCarga } from "./Aggregate Interfaces/IDocumentoCarga";
+
 class DocumentoCarga implements IDocumentoCarga {
       id = '';
       nome = '';
       descricao = '';
+      validado = false;
       arquivo = '';
 
       constructor(_id: string, _nome: string, _descricao: string, _arquivo: string) {

@@ -2,11 +2,14 @@ import { ICargaQuimica } from "../../../domain/Entities/Domain Interfaces/ICarga
 import { IPerfilUsuario } from "../../../domain/Entities/Domain Interfaces/IUsuario";
 import { enumNivelAcesso } from "../../../domain/enums/enumNivelAcesso";
 import { CargaDTO } from "../../DTO/cargaDTO";
+import { ValidarNivelAcesso } from "../ValidarNivelAcesso";
 
 export class ListarCargas {
-      public executar(_cargaDTO: CargaDTO, _usuario: IPerfilUsuario): ICargaQuimica[] {
-            if (this.ValidarPerfil(_usuario, enumNivelAcesso.OPERADOR_PORTUARIO)) {
-                  return _cargaDTO.listaDeCargas;
+      private validarNivelAcesso: ValidarNivelAcesso = new ValidarNivelAcesso();
+
+      public executar(_listaCargas: ICargaQuimica[], _usuario: IPerfilUsuario): ICargaQuimica[] {
+            if (this.validarNivelAcesso.executar(_usuario, enumNivelAcesso.OPERADOR_PORTUARIO)) {
+                  return _listaCargas;
             } else {
                   throw new Error("Usuário não tem permissão para listar cargas.");
             }

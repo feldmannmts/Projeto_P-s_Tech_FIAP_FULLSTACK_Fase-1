@@ -2,9 +2,12 @@ import { ICargaQuimica } from "../../../domain/Entities/Domain Interfaces/ICarga
 import { IPerfilUsuario } from "../../../domain/Entities/Domain Interfaces/IUsuario";
 import { enumNivelAcesso } from "../../../domain/enums/enumNivelAcesso";
 import { EspacoArmazenamento } from "../../../domain/Entities/AreaArmazenamento";
+import {ValidarNivelAcesso} from "../ValidarNivelAcesso";
 export class AlocarCarga {
+      private validarNivelAcesso: ValidarNivelAcesso = new ValidarNivelAcesso();
+
       public executar(_carga: ICargaQuimica, _usuario: IPerfilUsuario, _espacoArmazenamento: EspacoArmazenamento): void {
-            if (this.ValidarPerfil(_usuario, enumNivelAcesso.OPERADOR_PORTUARIO)) {
+            if (this.validarNivelAcesso.executar(_usuario, enumNivelAcesso.OPERADOR_PORTUARIO)) {
                   if (!_espacoArmazenamento.statusOcupado) {
                         _espacoArmazenamento.armazenarCarga(_carga);
                         _carga.espacoArmazenamento = _espacoArmazenamento;
@@ -16,10 +19,5 @@ export class AlocarCarga {
             }
       }
 
-      private ValidarPerfil(_usuario: IPerfilUsuario, nivelAcesso: enumNivelAcesso): boolean {
-            if (_usuario.nivelAcesso <= nivelAcesso) {
-                  return true;
-            }else
-                  return false;
-      }
+      
 }
