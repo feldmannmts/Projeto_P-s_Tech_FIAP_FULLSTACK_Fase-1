@@ -9,7 +9,7 @@ export class AtualizarStatusCarga {
 
       public executar(_carga: ICargaQuimica, _usuario: IPerfilUsuario, _novoStatus: enumStatusCarga): void {        
             if (this.validarNivelAcesso.executar(_usuario, enumNivelAcesso.INSPETOR_QUALIDADE)) {
-                  if (this.ValidarPermissao(_novoStatus, _usuario, _carga)) {
+                  if (this.ValidarPermissaoCarga(_novoStatus, _usuario, _carga)) {
                         if (_carga.status === enumStatusCarga.FINALIZADA || _carga.status === enumStatusCarga.CANCELADA) {
                               throw new Error("Não é possível atualizar o status da carga, pois ela já está finalizada ou cancelada.");
                         }
@@ -20,14 +20,7 @@ export class AtualizarStatusCarga {
             }
       }
 
-      private ValidarPerfil(_usuario: IPerfilUsuario, nivelAcesso: enumNivelAcesso): boolean {
-            if (_usuario.nivelAcesso >= nivelAcesso) {
-                  return true;
-            }else
-                  return false;
-      }
-
-      private ValidarPermissao(_novoStatus: enumStatusCarga, _usuario: IPerfilUsuario, _carga: ICargaQuimica): boolean {
+      private ValidarPermissaoCarga(_novoStatus: enumStatusCarga, _usuario: IPerfilUsuario, _carga: ICargaQuimica): boolean {
             if (_novoStatus === enumStatusCarga.REGISTRADA && _usuario.nivelAcesso >= enumNivelAcesso.OPERADOR_PORTUARIO) {
                   return true;
             }

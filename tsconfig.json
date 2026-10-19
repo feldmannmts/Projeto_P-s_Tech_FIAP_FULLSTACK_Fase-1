@@ -1,6 +1,7 @@
 {
       "compilerOptions": {
-            "module": "ESNext",
+            "module": "commonjs",
+            "esModuleInterop": true,
             "moduleResolution": "Bundler",
             "target": "ES2024",
             "jsx": "react-jsx",
