@@ -15,11 +15,4 @@ export class GetCargaId {
                   throw new Error("Usuário não tem permissão para procurar por cargas");
             }
       }
-
-      private ValidarPerfil(_usuario: IPerfilUsuario, nivelAcesso: enumNivelAcesso): boolean {
-            if (_usuario.nivelAcesso <= nivelAcesso) {
-                  return true;
-            }else
-                  return false;
-      }
 }

@@ -1,6 +1,6 @@
 import { IProdutoQuimico } from "./Domain Interfaces/IProdutoQuimico";
 import { IHistorico } from "./Aggregate Interfaces/IHistorico";
-import { Historico, Atualizacao } from "./Historico";
+import { Historico, AtualizacaoHistorico } from "./Historico";
 import { ICargaQuimica} from "./Domain Interfaces/ICargaQuimica";
 import {IUsuario} from "./Domain Interfaces/IUsuario";
 import { EspacoArmazenamento } from "./AreaArmazenamento";
@@ -38,7 +38,7 @@ export class CargaQuimica implements ICargaQuimica {
                         this.listaProduto.push(_produtoQuimico);
 
                         this.histórico = new Historico();
-                        this.histórico.listaAtualizacoes.push(new Atualizacao('1', new Date(), new Date().toLocaleTimeString()));
+                        this.histórico.listaAtualizacoes.push(new AtualizacaoHistorico('1', new Date(), new Date().toLocaleTimeString()));
                   }else{
                         throw new Error("Produto químico não está ativo ou não foi informado.");
                   }

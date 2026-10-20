@@ -1,3 +1,4 @@
+import { enumStatusCarga } from "../enums/enumStatusCarga";
 import { IHistorico} from "./Aggregate Interfaces/IHistorico";
 import { IHistoricoAtualizacao } from "./Aggregate Interfaces/IHistoricoAtualizacao";
 
@@ -10,16 +11,16 @@ export class Historico implements IHistorico {
 
 }
 
-export class Atualizacao implements IHistoricoAtualizacao {
-      id = '';
+export class AtualizacaoHistorico implements IHistoricoAtualizacao {
       dataMudanca = new Date();
-      horarioMudanca = '';
       descricao = '';
+      statusPassado = enumStatusCarga.EMPTY
+      statusAtual = enumStatusCarga.EMPTY
 
-      constructor(_id: string, _dataMudanca: Date, _horarioMudanca: string) {
-            this.id = _id;
+      constructor( _dataMudanca: Date, _motivo: string, _statusPassado: enumStatusCarga, _statusAtual:enumStatusCarga) {
             this.dataMudanca = _dataMudanca;
-            this.horarioMudanca = _horarioMudanca;
-            this.descricao = "CARGA CRIADA";
+            this.descricao = _motivo;
+            this.statusPassado = _statusPassado
+            this.statusAtual = _statusPassado
       }
 }
