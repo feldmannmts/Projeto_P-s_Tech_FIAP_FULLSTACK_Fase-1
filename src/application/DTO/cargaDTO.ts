@@ -64,7 +64,7 @@ export interface CargaOutputDTO {
             nome: string;
             email: string;
       };
-      produto: ProdutoOutputDTO;
+      produto: ProdutoOutputDTO[];
       documentos: DocumentoCargaOutputDTO[];
       historico: HistoricoAtualizacaoOutputDTO[];
       dataEntrada: string | Date;

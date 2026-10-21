@@ -1,17 +1,27 @@
 import { IProdutoQuimico } from "../../../domain/Entities/Domain Interfaces/IProdutoQuimico";
-import {IPerfilUsuario } from "../../../domain/Entities/Domain Interfaces/IUsuario";
+import { IUsuario } from "../../../domain/Entities/Domain Interfaces/IUsuario";
 import { enumNivelAcesso } from "../../../domain/enums/enumNivelAcesso";
+import { IProdutoRepository } from "../../Ports/Repositories/RepositorieProduto";
 import {ValidarNivelAcesso} from "../ValidarNivelAcesso";
 
 
-export class InativarProduto {
-      validarPerfil = new ValidarNivelAcesso;
-      public executar(_produto: IProdutoQuimico, _usuario: IPerfilUsuario){
-            if (this.validarPerfil.executar(_usuario, enumNivelAcesso.ADMINISTRADOR)) {
-                  _produto.statusAtivo = false;
-                  return _produto;
-            }
+export class InativarProduto{
+      private validarNivelAcesso: ValidarNivelAcesso = new ValidarNivelAcesso();
+      constructor(private _produtoRepository: IProdutoRepository) {}
 
-            throw new Error("Usuário não possui permissão para inativar produto.");
+      public async executar(_usuario: IUsuario,
+                        _idAlvo: string,
+                        ){
+                  if (this.validarNivelAcesso.executar(_usuario.perfilUsuario, enumNivelAcesso.RESPONSAVEL_TECNICO)) {
+                        const produto = await this._produtoRepository.buscarPorId(_idAlvo);
+
+                        if (!produto){
+                              throw new Error("Produto não encontrado.");
+                        }
+
+                        produto.statusAtivo=false;
+                  }else{
+                        throw new Error("Usuário não possui permissão para alterar o produto.");
+                  }
       }
 }
