@@ -1,4 +1,5 @@
 import { IProdutoQuimico } from "../../domain/Entities/Domain Interfaces/IProdutoQuimico";
+import { IUsuario } from "../../domain/Entities/Domain Interfaces/IUsuario";
 import { enumClasseRisco} from "../../domain/enums/enumClasseRisco"
 
 
@@ -22,23 +23,10 @@ export interface AtualizarProdutoInputDTO {
       grupoCompatibilidade?: string;
 }
 
-export interface BuscarProdutoPorIDInputDTO {
-      id: string;
-}
-
-export interface InativarProdutoInputDTO {
-      statusAtivo: boolean;
-}
-
-
-
 // ==========================================
 // 2. DTOs DE SAÍDA (RESPONSES)
 // ==========================================
-export interface ListarProdutosOutputDTO{
-      listaProdutos: IProdutoQuimico[];
-}
-export interface ProdutoResponseDTO {
+export interface ProdutoOutputDTO {
       id: string;
       nome: string;
       descricao: string;
@@ -46,4 +34,8 @@ export interface ProdutoResponseDTO {
       classeRisco: enumClasseRisco;
       grupoCompatibilidade: string;
       statusAtivo: boolean;
+}
+
+export interface ListarProdutosOutputDTO {
+      listaProdutos: ProdutoOutputDTO[];
 }

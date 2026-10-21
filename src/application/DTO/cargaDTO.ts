@@ -1,11 +1,11 @@
-import { ICargaQuimica } from "../../domain/Entities/Domain Interfaces/ICargaQuimica";
 import { IDocumentoCarga } from "../../domain/Entities/Aggregate Interfaces/IDocumentoCarga";
-import { IProdutoQuimico } from "../../domain/Entities/Domain Interfaces/IProdutoQuimico";
 import { enumStatusCarga} from "../../domain/enums/enumStatusCarga";
-import { ProdutoResponseDTO } from "./produtoDTO";
+import { ProdutoOutputDTO } from "./produtoDTO";
 
 
-
+// ==========================================
+// 1. DTOs DE ENTRADA (REQUESTS)
+// ==========================================
 
 export interface RegistrarCargaDTO {
       codigoCarga: string;
@@ -21,6 +21,7 @@ export interface AtualizarStatusCargaDTO {
 }
 
 export interface BloquearCargaDTO {
+      id: string
       motivo: string;
 }
 
@@ -28,23 +29,11 @@ export interface CancelarCargaDTO {
       motivo: string;
 }
 
-export interface GetCargaIdOutputDTO {
-      id: string;
-}
-
-export interface LiberarCargaInputDTO {
-      codigoCarga: string;
-      produtoId: string;
-      quantidade: IProdutoQuimico[];
-      status: enumStatusCarga;
-}
-
+// ==========================================
+// 2. DTOs DE SAÍDA (RESPONSES)
+// ==========================================
 export interface ListarCargasOutputDTO {
-      listaCargas: ICargaQuimica[];
-}
-
-export interface ValidarDocumentoInputDTO {
-      listaDocumentosCarga: IDocumentoCarga[];
+      listaCargas: CargaOutputDTO[];
 }
 
 export interface DocumentoCargaOutputDTO {
@@ -62,7 +51,7 @@ export interface HistoricoAtualizacaoOutputDTO {
 }
 
 
-export interface CargaResponseDTO {
+export interface CargaOutputDTO {
       id: string;
       codigoCarga: string;
       quantidade: number;
@@ -75,7 +64,7 @@ export interface CargaResponseDTO {
             nome: string;
             email: string;
       };
-      produto: ProdutoResponseDTO;
+      produto: ProdutoOutputDTO;
       documentos: DocumentoCargaOutputDTO[];
       historico: HistoricoAtualizacaoOutputDTO[];
       dataEntrada: string | Date;
