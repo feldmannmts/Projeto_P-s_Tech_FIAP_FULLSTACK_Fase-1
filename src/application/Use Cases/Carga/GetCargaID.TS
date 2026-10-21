@@ -9,7 +9,7 @@ export class GetCargaId {
       private validarNivelAcesso: ValidarNivelAcesso = new ValidarNivelAcesso();
 
       public executar(_listaCargaQuimicas: ICargaQuimica[],_idAlvo: string, _usuario: IPerfilUsuario): ICargaQuimica[] {
-            if (this.validarNivelAcesso.executar(_usuario, enumNivelAcesso.OPERADOR_PORTUARIO)) {
+            if (this.validarNivelAcesso.executar(_usuario, enumNivelAcesso.RESPONSAVEL_TECNICO)) {
                   return _listaCargaQuimicas.filter((carga) => carga.id === _idAlvo);
             } else {
                   throw new Error("Usuário não tem permissão para procurar por cargas");
