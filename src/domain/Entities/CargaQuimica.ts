@@ -23,7 +23,7 @@ export class CargaQuimica implements ICargaQuimica {
       constructor(_id: string, 
             _codigoCarga: string, 
             _responsavelTecnico: IUsuario,
-            _espacoArmazenamento: EspacoArmazenamento, 
+            //_espacoArmazenamento: EspacoArmazenamento, 
             _origemCarga?: string, 
             _destinoCarga?: string, 
             _produtoQuimico?: IProdutoQuimico)        
@@ -31,14 +31,13 @@ export class CargaQuimica implements ICargaQuimica {
                   this.id = _id;
                   this.codigoCarga = _codigoCarga;
                   this.responsavelTecnico = _responsavelTecnico;
-                  this.espacoArmazenamento = _espacoArmazenamento;
+                  //this.espacoArmazenamento = _espacoArmazenamento;
                   this.status = enumStatusCarga.REGISTRADA;
 
                   if (_produtoQuimico && _produtoQuimico.statusAtivo != false) {
                         this.listaProduto.push(_produtoQuimico);
-
                         this.histórico = new Historico();
-                        this.histórico.listaAtualizacoes.push(new AtualizacaoHistorico('1', new Date(), new Date().toLocaleTimeString()));
+                        this.histórico.listaAtualizacoes.push(new AtualizacaoHistorico(new Date(),'',enumStatusCarga.EMPTY, enumStatusCarga.REGISTRADA));
                   }else{
                         throw new Error("Produto químico não está ativo ou não foi informado.");
                   }

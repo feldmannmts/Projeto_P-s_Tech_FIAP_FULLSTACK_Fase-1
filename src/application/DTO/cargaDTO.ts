@@ -18,15 +18,7 @@ export interface RegistrarCargaDTO {
 }
 export interface AtualizarStatusCargaDTO {
       novoStatus: enumStatusCarga;
-}
-
-export interface BloquearCargaDTO {
-      id: string
-      motivo: string;
-}
-
-export interface CancelarCargaDTO {
-      motivo: string;
+      motivo?: string;
 }
 
 // ==========================================

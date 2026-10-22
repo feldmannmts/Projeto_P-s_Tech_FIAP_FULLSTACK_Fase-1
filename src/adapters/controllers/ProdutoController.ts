@@ -33,7 +33,7 @@ export class ProdutoController{
                         true,
                         usuarioMock
                   );
-                  return res.status(201).json(novoProduto);
+                  return res.status(200).json(novoProduto);
             }catch(error: any){
                   return res.status(400).json({erro: error.message}); 
             }
@@ -41,16 +41,16 @@ export class ProdutoController{
 
       public atualizarProduto = async(req: Request, res: Response): Promise<Response> => {
             try {
-                  const {_id} = req.params;
-                  if (typeof _id !== "string") {
+                  const {id} = req.params;
+                  if (typeof id !== "string") {
                         return res.status(400).json({ erro: "ID do produto inválido." });
                   }
 
                   const produtoDTO: AtualizarProdutoInputDTO = req.body;
                   const userMock = req.body.usuario;
-                  const novoProduto = await this.atualizarProdutoUseCase.executar(userMock, _id, produtoDTO)
+                  const novoProduto = await this.atualizarProdutoUseCase.executar(userMock, id, produtoDTO)
                   
-                  return res.status(201).json(novoProduto);
+                  return res.status(200).json(novoProduto);
             } catch (error: any) {
                   return res.status(400).json({erro: error.message}); 
             }
@@ -59,8 +59,8 @@ export class ProdutoController{
       public listarProdutos = async (req: Request, res: Response): Promise<Response> =>{
             try {
                   const userMock = req.body.usuario;
-                  return res.status(201).json(this.listarProdutosUseCase.executar(userMock));
-
+                  const listaProdutos = await res.status(201).json(this.listarProdutosUseCase.executar(userMock));
+                  return res.status(200).json(listaProdutos);
             } catch (error: any) {
                   return res.status(400).json({erro: error.message}); 
 
@@ -69,14 +69,14 @@ export class ProdutoController{
 
       public buscarProdutoPorID = async (req: Request, res: Response): Promise<Response> =>{
             try {
-                  const {_id} = req.params;
+                  const {id} = req.params;
                   const userMock = req.body.usuario;
 
-                  if (typeof _id !== "string") {
+                  if (typeof id !== "string") {
                         return res.status(400).json({ erro: "ID do produto inválido." });
                   }
 
-                  return res.status(201).json(this.buscarProdutoPorIdUseCase.executar(userMock,_id));
+                  return res.status(200).json(this.buscarProdutoPorIdUseCase.executar(userMock,id));
 
             } catch (error: any) {
                   return res.status(400).json({erro: error.message}); 
@@ -86,11 +86,15 @@ export class ProdutoController{
       public inativarProduto = async (req: Request, res: Response): Promise<Response> =>{
             
             try {
-                  const {_id} = req.body;
+                  const {id} = req.params;
+                  if (typeof id !== "string") {
+                        return res.status(400).json({ erro: "ID do produto inválido." });
+                  }
+
                   const userMock = req.body.usuario;
 
-                  this.inativarProdutoUseCase.executar(userMock, _id )
-                  return res.status(201).json(`Produto com a ID ${_id} foi Inativado`);
+                  await this.inativarProdutoUseCase.executar(userMock, id)
+                  return res.status(200).json(`Produto com a ID ${id} foi Inativado`);
 
             } catch (error: any) {
                   return res.status(400).json({erro: error.message}); 

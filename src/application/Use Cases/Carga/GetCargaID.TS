@@ -1,16 +1,25 @@
 import { ICargaQuimica } from "../../../domain/Entities/Domain Interfaces/ICargaQuimica";
 import { IPerfilUsuario } from "../../../domain/Entities/Domain Interfaces/IUsuario";
 import { enumNivelAcesso } from "../../../domain/enums/enumNivelAcesso";
+import { ICargaRepository } from "../../Ports/Repositories/RepositorieCarga";
 import { ValidarNivelAcesso } from "../ValidarNivelAcesso";
 
 
 
 export class GetCargaId {
       private validarNivelAcesso: ValidarNivelAcesso = new ValidarNivelAcesso();
+      constructor (private _cargaRepositorie: ICargaRepository) {}
 
-      public executar(_listaCargaQuimicas: ICargaQuimica[],_idAlvo: string, _usuario: IPerfilUsuario): ICargaQuimica[] {
+
+
+      public async executar(_idAlvo: string, _usuario: IPerfilUsuario): Promise<ICargaQuimica>  {
             if (this.validarNivelAcesso.executar(_usuario, enumNivelAcesso.RESPONSAVEL_TECNICO)) {
-                  return _listaCargaQuimicas.filter((carga) => carga.id === _idAlvo);
+                  const carga = await this._cargaRepositorie.buscarPorId(_idAlvo)
+                  if(!carga){
+                        throw new Error("Carga não encontrada.");
+                  }
+
+                  return carga;
             } else {
                   throw new Error("Usuário não tem permissão para procurar por cargas");
             }

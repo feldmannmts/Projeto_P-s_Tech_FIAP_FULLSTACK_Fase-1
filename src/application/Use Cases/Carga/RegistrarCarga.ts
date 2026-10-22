@@ -1,29 +1,25 @@
-import { ICargaQuimica } from "../../../domain/Entities/Domain Interfaces/ICargaQuimica";
-import {IPerfilUsuario, IUsuario } from "../../../domain/Entities/Domain Interfaces/IUsuario";
+import { IUsuario } from "../../../domain/Entities/Domain Interfaces/IUsuario";
 import { enumNivelAcesso } from "../../../domain/enums/enumNivelAcesso";
-import { EspacoArmazenamento } from "../../../domain/Entities/AreaArmazenamento";
+//import { EspacoArmazenamento } from "../../../domain/Entities/AreaArmazenamento";
 import { CargaQuimica } from "../../../domain/Entities/CargaQuimica";
-import { IProdutoQuimico } from "../../../domain/Entities/Domain Interfaces/IProdutoQuimico";
 import { ValidarNivelAcesso } from "../ValidarNivelAcesso";
+import { RegistrarCargaDTO } from "../../DTO/cargaDTO";
+import { ICargaRepository } from "../../Ports/Repositories/RepositorieCarga";
 
-class RegistrarNovaCarga {
+export class RegistrarCarga {
       private validarNivelAcesso: ValidarNivelAcesso = new ValidarNivelAcesso();
+      constructor (private _cargaRepositorie: ICargaRepository) {}
 
-      public executar(_usuario: IUsuario, 
-            _espacoArmazenamento: EspacoArmazenamento, 
-            _origemCarga?: string, 
-            _destinoCarga?: string, 
-            _produtoQuimico?: IProdutoQuimico[], 
-            ): ICargaQuimica {
+
+      public async executar(_usuario: IUsuario,
+            _novaCargaDTO: RegistrarCargaDTO,
+            //_espacoArmazenamento: EspacoArmazenamento, 
+            ): Promise<void> {
                   if (this.validarNivelAcesso.executar(_usuario.perfilUsuario, enumNivelAcesso.OPERADOR_PORTUARIO)) {
-                        return new CargaQuimica( 
-                        '1', //ID
-                        'CARGA-001', //codigoCarga
-                        _usuario, //responsavelTecnico
-                        _espacoArmazenamento, //espacoArmazenamento
-                        _origemCarga, //origemCarga
-                        _destinoCarga, //destinoCarga
-                        );
+                        
+                        const novaCarga = new CargaQuimica('id',_novaCargaDTO.codigoCarga,_usuario,_novaCargaDTO.origemCarga,_novaCargaDTO.destinoCarga,)
+
+                        this._cargaRepositorie.atualizar(novaCarga)
                   }else{
                         throw new Error("Usuário não possui permissão para registrar carga.");
                   }

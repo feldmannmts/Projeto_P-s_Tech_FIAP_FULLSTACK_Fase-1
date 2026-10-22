@@ -6,15 +6,15 @@ import {enumStatusCarga} from "../../enums/enumStatusCarga";
 import { IDocumentoCarga } from "../../../domain/Entities/Aggregate Interfaces/IDocumentoCarga";
 
 export interface ICargaQuimica {
-      id: string;
-      codigoCarga: string;
+      id: string; // NÃO PRECISA
+      codigoCarga: string; // PRECISA
       status: enumStatusCarga;
       listaProduto: IProdutoQuimico[];
-      unidadeMedida: string;
-      origemCarga: string;
-      destinoCarga: string;
-      histórico: IHistorico;
+      unidadeMedida: string; 
+      origemCarga: string; // PRECISA
+      destinoCarga: string;// PRECISA
+      histórico: IHistorico; 
       listaDocumentosCarga: IDocumentoCarga[];
-      responsavelTecnico: IUsuario;
-      espacoArmazenamento: EspacoArmazenamento;
+      responsavelTecnico: IUsuario; // PRECISA
+      //espacoArmazenamento: EspacoArmazenamento; // PRECISA
 }
