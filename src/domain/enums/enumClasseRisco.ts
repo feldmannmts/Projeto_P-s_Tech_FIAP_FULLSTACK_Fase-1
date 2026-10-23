@@ -1,4 +1,4 @@
-export const enum enumClasseRisco {
+export enum enumClasseRisco {
       //FONTE: https://www.fepam.rs.gov.br/upload/arquivos/202212/26133322-manual-classificacao-produto-perigoso.pdf
       NENHUM = "NENHUM",
       CLASSE_1 = "CLASSE_1 - Explosivos",
