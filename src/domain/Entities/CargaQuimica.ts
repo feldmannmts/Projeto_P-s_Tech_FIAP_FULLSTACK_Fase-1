@@ -24,9 +24,9 @@ export class CargaQuimica implements ICargaQuimica {
             _codigoCarga: string, 
             _responsavelTecnico: IUsuario,
             //_espacoArmazenamento: EspacoArmazenamento, 
-            _origemCarga?: string, 
-            _destinoCarga?: string, 
-            _produtoQuimico?: IProdutoQuimico)        
+            _origemCarga: string, 
+            _destinoCarga: string, 
+            _produtoQuimico: IProdutoQuimico)        
       {
                   this.id = _id;
                   this.codigoCarga = _codigoCarga;

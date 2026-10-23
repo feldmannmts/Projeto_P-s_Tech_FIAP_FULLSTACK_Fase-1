@@ -26,7 +26,7 @@ export class CancelarCarga {
                         new AtualizacaoHistorico(new Date(),_motivo, carga.status,enumStatusCarga.CANCELADA))
 
                   //MUDA STATUS PRA BLOQUEADA
-                  const cargaManager = new AtualizarStatusCarga(this._cargaRepositorie).executar(carga.id, _usuario.perfilUsuario, enumStatusCarga.CANCELADA, _cargaDTO);
+                  const cargaManager = await new AtualizarStatusCarga(this._cargaRepositorie).executar(carga.id, _usuario.perfilUsuario, enumStatusCarga.CANCELADA, _cargaDTO);
             }
       }
 

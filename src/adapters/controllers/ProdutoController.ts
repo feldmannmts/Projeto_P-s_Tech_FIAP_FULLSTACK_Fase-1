@@ -33,7 +33,7 @@ export class ProdutoController{
                         true,
                         usuarioMock
                   );
-                  return res.status(200).json(novoProduto);
+                  return res.status(201).json(novoProduto);
             }catch(error: any){
                   return res.status(400).json({erro: error.message}); 
             }
@@ -59,8 +59,8 @@ export class ProdutoController{
       public listarProdutos = async (req: Request, res: Response): Promise<Response> =>{
             try {
                   const userMock = req.body.usuario;
-                  const listaProdutos = await res.status(201).json(this.listarProdutosUseCase.executar(userMock));
-                  return res.status(200).json(listaProdutos);
+                  const listaProdutos = await this.listarProdutosUseCase.executar(userMock);
+                  return res.status(201).json(listaProdutos);
             } catch (error: any) {
                   return res.status(400).json({erro: error.message}); 
 
@@ -76,8 +76,8 @@ export class ProdutoController{
                         return res.status(400).json({ erro: "ID do produto inválido." });
                   }
 
-                  return res.status(200).json(this.buscarProdutoPorIdUseCase.executar(userMock,id));
-
+                  const produto = await this.buscarProdutoPorIdUseCase.executar(userMock, id);
+                  return res.status(200).json(produto);
             } catch (error: any) {
                   return res.status(400).json({erro: error.message}); 
             }

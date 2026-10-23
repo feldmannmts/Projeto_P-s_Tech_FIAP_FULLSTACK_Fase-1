@@ -34,7 +34,7 @@ export class LiberarCarga {
                   throw Error("Carga está Bloqueada ou Cancelada");              
             }
 
-            const cargaManager = new AtualizarStatusCarga(this._cargaRepositorie).executar(_idAlvo, _usuario.perfilUsuario, enumStatusCarga.LIBERADA, _cargaDTO);
+            const cargaManager = await new AtualizarStatusCarga(this._cargaRepositorie).executar(_idAlvo, _usuario.perfilUsuario, enumStatusCarga.LIBERADA, _cargaDTO);
 
       }
 }

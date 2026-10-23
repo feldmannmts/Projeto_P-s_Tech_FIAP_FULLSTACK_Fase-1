@@ -27,8 +27,11 @@ export class AtualizarStatusCarga {
 
 
                         carga.status = _novoStatus;
-                        return;
+                  }else { 
+                        throw new Error("Transição de status não permitida."); 
                   }
+                  await this._cargaRepositorie.atualizar(carga);
+                  
             } else {
                   throw new Error("Usuário não possui permissão para atualizar o status da carga.");
             }
@@ -41,16 +44,16 @@ export class AtualizarStatusCarga {
             else if (_novoStatus === enumStatusCarga.EM_MOVIMENTO && _carga.status === enumStatusCarga.LIBERADA && _usuario.nivelAcesso >= enumNivelAcesso.OPERADOR_PORTUARIO) {
                   return true;
             }
-            else if (_novoStatus === enumStatusCarga.EM_ANALISE && _usuario.nivelAcesso >= enumNivelAcesso.INSPETOR_QUALIDADE) {
+            else if (_novoStatus === enumStatusCarga.EM_ANALISE && _usuario.nivelAcesso >= enumNivelAcesso.INSPETOR_QUALIDADE && _carga.status === enumStatusCarga.REGISTRADA) {
                   return true;
             }
-            else if (_novoStatus === enumStatusCarga.EM_INSPECAO && _usuario.nivelAcesso >= enumNivelAcesso.INSPETOR_QUALIDADE) {
+            else if (_novoStatus === enumStatusCarga.EM_INSPECAO && _usuario.nivelAcesso >= enumNivelAcesso.INSPETOR_QUALIDADE && _carga.status === enumStatusCarga.EM_ANALISE) {
                   return true;
             }
-            else if (_novoStatus === enumStatusCarga.LIBERADA && _usuario.nivelAcesso >= enumNivelAcesso.INSPETOR_QUALIDADE) {
+            else if (_novoStatus === enumStatusCarga.LIBERADA && _usuario.nivelAcesso >= enumNivelAcesso.INSPETOR_QUALIDADE && _carga.status === enumStatusCarga.EM_INSPECAO) {
                   return true;
             }
-            else if (_novoStatus === enumStatusCarga.BLOQUEADA && _usuario.nivelAcesso >= enumNivelAcesso.INSPETOR_QUALIDADE) {
+            else if (_novoStatus === enumStatusCarga.BLOQUEADA && _usuario.nivelAcesso >= enumNivelAcesso.INSPETOR_QUALIDADE && _carga.status === enumStatusCarga.EM_INSPECAO) {
                   return true;
             }
             else if (_novoStatus === enumStatusCarga.CANCELADA && _usuario.nivelAcesso >= enumNivelAcesso.RESPONSAVEL_TECNICO) {

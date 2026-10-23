@@ -102,9 +102,8 @@ export class CargaController{
                         return res.status(400).json({ erro: "ID do produto inválido." });
                   }
 
-                  await this.getCargaIDUseCase.executar(id,usuarioMock);
-                  return res.status(200).json(`Status da Carga de ID ${id} foi Alterado com Sucesso para CANCELADA`)
-
+                  const carga = await this.getCargaIDUseCase.executar(id, usuarioMock);
+                  return res.status(200).json(carga);
             } catch (error: any) {
                   return res.status(400).json({erro: error.message}); 
             }
@@ -145,8 +144,8 @@ export class CargaController{
             try {
                   const novaCargaDTO: RegistrarCargaDTO = req.body;
                   const usuario = req.body.usuario;
-                  const novaCarga = this.registrarCargaUseCase.executar(usuario, novaCargaDTO);
-                  return res.status(201).json('Carga Registrada');
+                  const novaCarga = await this.registrarCargaUseCase.executar(usuario, novaCargaDTO);
+                  return res.status(201).json(novaCarga);
             } catch (error: any) {
                   return res.status(400).json({ erro: error.message });
             }
@@ -162,7 +161,7 @@ export class CargaController{
                         return res.status(400).json({ erro: "ID do produto ou do Documento inválido." });
                   }
 
-                  this.validarDocumentacaoUseCase.executar(idCarga,usuarioMock,idDocumento)
+                  await this.validarDocumentacaoUseCase.executar(idCarga,usuarioMock,idDocumento)
                   return res.status(200).json(`Documento ${idDocumento} da Carga de ID ${idCarga} foi Validado com Sucesso`)
 
             } catch (error: any) {
