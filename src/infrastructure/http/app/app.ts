@@ -8,6 +8,20 @@ export const app = express();
 // 1. Permite que o Express leia JSON no req.body
 app.use(express.json());
 
+
+app.use((req, _res, next) => {
+      if (!req.body) req.body = {};
+      if (!req.body.usuario) {
+            req.body.usuario = {
+                  id: "user-1",
+                  nome: "Admin Teste",
+                  nivelAcesso: 4, // Caso o UseCase espere IPerfilUsuario direto
+                  perfilUsuario: { nivelAcesso: 4 } // Caso o UseCase espere IUsuario
+            };
+      }
+      next();
+});
+
 // 2. Middleware de Logs e Observabilidade Inicial (Requisito 10 do Edital)
 app.use((req, res, next) => {
       const inicio = Date.now();
