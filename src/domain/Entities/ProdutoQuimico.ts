@@ -11,10 +11,14 @@ export class ProdutoQuimico implements IProdutoQuimico {
       statusAtivo = false;
       historicoAtualizacoes = new Historico();
 
-      constructor(_nome: string, _codigo: string, _classeRisco: enumClasseRisco) {
+      constructor(_nome: string, _codigoONU: string, _classeRisco: enumClasseRisco, _descricao: string = "", _grupoCompatibilidade: string = "") {
+
+            this.id = Date.now().toString(); // Gera um ID único para o produto
             this.nome = _nome;
-            this.id = _codigo;
+            this.codigoONU = _codigoONU;
             this.classeRisco = _classeRisco;
+            this.descricao = _descricao;
+            this.grupoCompatibilidade = _grupoCompatibilidade;
             this.statusAtivo = true;
             this.historicoAtualizacoes = new Historico();
       }
