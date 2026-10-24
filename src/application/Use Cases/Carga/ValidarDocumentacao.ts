@@ -25,6 +25,8 @@ export class ValidarDocumentacao {
 
                   }
                   documento.validado=true;
+
+                  await this._cargaRepositorie.atualizar(carga);
             } else {
                   //ERROR
                   throw new Error("Usuário não possui permissão para Validar Documentos da carga.");

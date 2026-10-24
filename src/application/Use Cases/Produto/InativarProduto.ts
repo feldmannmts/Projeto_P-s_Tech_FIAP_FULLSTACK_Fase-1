@@ -20,6 +20,7 @@ export class InativarProduto{
                         }
 
                         produto.statusAtivo=false;
+                        await this._produtoRepository.atualizar(produto);
                   }else{
                         throw new Error("Usuário não possui permissão para alterar o produto.");
                   }

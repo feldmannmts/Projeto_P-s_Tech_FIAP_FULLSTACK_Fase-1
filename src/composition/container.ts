@@ -18,14 +18,15 @@ import { BloquearCarga } from "../application/Use Cases/Carga/BloquearCarga";
 import { LiberarCarga } from "../application/Use Cases/Carga/LiberarCarga";
 import { CancelarCarga } from "../application/Use Cases/Carga/CancelarCarga";
 import { ValidarDocumentacao } from "../application/Use Cases/Carga/ValidarDocumentacao";
+import { ProdutoRepositoryPostgres, CargaQuimicaRepositoryPostgres } from "../application/Ports/Repositories/RepositoriePostgres";
 
 // Controllers
 import { ProdutoController } from "../adapters/controllers/ProdutoController";
 import { CargaController } from "../adapters/controllers/CargaController";
 
 // 1. Instâncias únicas dos Repositórios (Singletons)
-export const produtoRepository = new ProdutoRepositoryMemoria();
-export const cargaRepository = new CargaQuimicaRepositoryMemoria();
+export const produtoRepository = new ProdutoRepositoryPostgres();
+export const cargaRepository = new CargaQuimicaRepositoryPostgres();
 
 // 2. Montagem dos Use Cases de Produto
 const cadastrarProdutoUC = new CadastrarProduto(produtoRepository);

@@ -1,6 +1,14 @@
-// src/index.ts
 import { app } from "./infrastructure/http/app/app";
-const PORT = 5500;
-app.listen(PORT, () => {
-      console.log(`Servidor QuimiPort Live em http://localhost:${PORT}`);
-});
+import { inicializarBanco } from "./infrastructure/database/connection";
+
+const PORT = 35500;
+
+inicializarBanco()
+      .then(() => {
+            app.listen(PORT, () => {
+                  console.log(`🚀 Servidor QuimiPort Live em http://localhost:${PORT}`);
+            });
+      })
+      .catch((erro) => {
+            console.error("❌ Erro ao conectar no PostgreSQL:", erro);
+      });
