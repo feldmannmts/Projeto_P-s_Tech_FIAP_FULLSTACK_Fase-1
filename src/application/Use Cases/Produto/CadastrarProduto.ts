@@ -2,9 +2,9 @@ import { IProdutoQuimico } from "../../../domain/Entities/Domain Interfaces/IPro
 import { ProdutoQuimico } from "../../../domain/Entities/ProdutoQuimico";
 import {IPerfilUsuario } from "../../../domain/Entities/Domain Interfaces/IUsuario";
 import { enumNivelAcesso } from "../../../domain/enums/enumNivelAcesso";
-import { enumClasseRisco } from "../../../domain/enums/enumClasseRisco";
 import {ValidarNivelAcesso} from "../ValidarNivelAcesso";
 import { IProdutoRepository } from "../../Ports/Repositories/RepositorieProduto";
+import { CadastrarProdutoInputDTO } from "../../DTO/produtoDTO";
 
 
 export class CadastrarProduto {
@@ -13,9 +13,16 @@ export class CadastrarProduto {
       constructor(private _produtoRepository: IProdutoRepository) {}
 
 
-      public async executar(_nome: string, _codigo: string, _classeRisco: enumClasseRisco, _ativo: boolean, _usuario: IPerfilUsuario){
+      public async executar(_produtoDTO:CadastrarProdutoInputDTO, _usuario: IPerfilUsuario){
             if (this.validarPerfil.executar(_usuario, enumNivelAcesso.ADMINISTRADOR)) {
-                  const novoProdutoQuimico: IProdutoQuimico = new ProdutoQuimico(_nome, _codigo, _classeRisco);
+                  const novoProdutoQuimico: IProdutoQuimico = new ProdutoQuimico(
+                        _produtoDTO.nome,
+                        _produtoDTO.codigoONU, 
+                        _produtoDTO.classeRisco,
+                        _produtoDTO.descricao, 
+                        _produtoDTO.grupoCompatibilidade
+                  );
+                  
                   await this._produtoRepository.salvar(novoProdutoQuimico);
                   return novoProdutoQuimico;
             }

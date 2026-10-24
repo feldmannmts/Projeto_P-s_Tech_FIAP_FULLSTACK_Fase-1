@@ -13,7 +13,7 @@ export class ProdutoQuimico implements IProdutoQuimico {
 
       constructor(_nome: string, _codigoONU: string, _classeRisco: enumClasseRisco, _descricao: string = "", _grupoCompatibilidade: string = "") {
 
-            this.id = Date.now().toString(); // Gera um ID único para o produto
+            this.id = crypto.randomUUID(); // Gera um ID único para o produto
             this.nome = _nome;
             this.codigoONU = _codigoONU;
             this.classeRisco = _classeRisco;

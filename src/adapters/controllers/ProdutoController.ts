@@ -26,13 +26,7 @@ export class ProdutoController{
                         return res.status(400).json({ erro: "Nome e Classe de Risco são obrigatórios." })
                   }
 
-                  const novoProduto = await this.cadastrarProdutoUseCase.executar(
-                        produtoDTO.nome,
-                        produtoDTO.codigoONU,
-                        produtoDTO.classeRisco,
-                        true,
-                        usuarioMock
-                  );
+                  const novoProduto = await this.cadastrarProdutoUseCase.executar(produtoDTO,usuarioMock);
                   return res.status(201).json(novoProduto);
             }catch(error: any){
                   return res.status(400).json({erro: error.message}); 
