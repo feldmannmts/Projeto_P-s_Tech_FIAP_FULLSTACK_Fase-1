@@ -48,7 +48,10 @@ function ValidaQuantidadeProdutosCarga(_carga: ICargaQuimica): boolean {
 }
 
 function ValidaDocumentosCarga(_carga: ICargaQuimica): boolean {
-      return _carga.listaDocumentosCarga.every((_documento) => _documento.validado === true);
+      return (
+            _carga.listaDocumentosCarga.length > 0 &&
+            _carga.listaDocumentosCarga.every((_documento) => _documento.validado === true)
+      );
 }
 
 function ValidaStatusCarga(_carga: ICargaQuimica): boolean {
