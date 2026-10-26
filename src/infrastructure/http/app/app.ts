@@ -2,6 +2,8 @@
 import express from "express";
 import { produtoRoutes } from "../routes/ProdutoRoutes";
 import { cargaRoutes } from "../routes/CargaRoutes";
+import swaggerUi from "swagger-ui-express";
+import { swaggerDocument } from "../swagger";
 
 export const app = express();
 
@@ -35,3 +37,4 @@ app.use((req, res, next) => {
 // 3. Registro das Rotas Principais (Requisito 5 do Edital)
 app.use("/produtos-quimicos", produtoRoutes);
 app.use("/cargas-quimicas", cargaRoutes);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
