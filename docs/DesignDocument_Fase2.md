@@ -59,7 +59,7 @@ Na Fase 2, o controle de permissão foi implementado através do enum numérico 
 
 | Nível (`enumNivelAcesso`) | Valor Numérico | Responsabilidade no Sistema |
 |---|---|---|
-| `OPERADOR_PORTUARIO` | `0` | Consultar produtos e cargas |
+| `OPERADOR_PORTUARIO` | `0` | Consultar produtos, consultar cargas e registrar cargas |
 | `ANALISTA_DOCUMENTACAO` | `1` | Validar documentação obrigatória associada às cargas |
 | `RESPONSAVEL_TECNICO` | `2` | Registrar cargas, atualizar status, bloquear, liberar e validar documentos |
 | `GESTOR_OPERACIONAL` | `3` | Cadastrar, atualizar e inativar produtos químicos; cancelar cargas |
@@ -159,17 +159,90 @@ nivelAcesso: enumNivelAcesso
 
 ## 5. Modelagem de Dados e Persistência (PostgreSQL)
 
-Na Fase 2, a persistência foi implementada utilizando o pacote `pg` (`Pool` de conexões em `src/infrastructure/database/connection.ts`) com criação automática do schema (`inicializarBanco()`) e suporte a tipos `JSONB` do PostgreSQL para armazenar os agregados da `CargaQuimica` e `ProdutoQuimico` sem perda de fidelidade ao modelo rico de domínio.
+Na Fase 2, a persistência foi implementada utilizando o pacote `pg` (`Pool` de conexões em `src/infrastructure/database/connection.ts`) com criação automática do schema (`inicializarBanco()`).
 
-### 5.1 Diagrama de Entidade-Relacionamento (Conceitual + Físico)
+A modelagem une a **integridade referencial relacional** entre as tabelas `produtos_quimicos` e `cargas_quimicas` (`produto_id REFERENCES produtos_quimicos(id)`) com colunas **`JSONB`** do PostgreSQL para armazenar os agregados internos da `CargaQuimica` (`documentos`, `historico` e `responsavel_tecnico`) e do `ProdutoQuimico` (`historico`).
+
+### 5.1 Diagrama UML de Classes/Tabelas do Banco de Dados (Modelo Físico + JSONB)
+
+```mermaid
+classDiagram
+    direction LR
+
+    class produtos_quimicos {
+        <<Table>>
+        +VARCHAR(100) id [PK]
+        +VARCHAR(255) nome [NOT NULL]
+        +TEXT descricao
+        +VARCHAR(100) codigo_onu [NOT NULL]
+        +VARCHAR(100) classe_risco [NOT NULL]
+        +VARCHAR(100) grupo_compatibilidade
+        +BOOLEAN status_ativo [DEFAULT TRUE]
+        +JSONB historico
+        +TIMESTAMP data_criacao
+        +TIMESTAMP data_atualizacao
+    }
+
+    class cargas_quimicas {
+        <<Table>>
+        +VARCHAR(100) id [PK]
+        +VARCHAR(100) codigo_carga [NOT NULL]
+        +VARCHAR(50) status [NOT NULL]
+        +VARCHAR(100) produto_id [FK -> produtos_quimicos.id]
+        +NUMERIC quantidade [NOT NULL, DEFAULT 1]
+        +VARCHAR(50) unidade_medida
+        +VARCHAR(255) origem_carga
+        +VARCHAR(255) destino_carga
+        +JSONB responsavel_tecnico [NOT NULL]
+        +JSONB documentos [DEFAULT '[]']
+        +JSONB historico
+        +TIMESTAMP data_entrada
+        +TIMESTAMP data_criacao
+        +TIMESTAMP data_atualizacao
+    }
+
+    class DocumentoCarga_JSONB {
+        <<JSONB Array Element>>
+        +String id
+        +String idCarga
+        +String tipoDocumento
+        +String urlDocumento
+        +Boolean validado
+    }
+
+    class Historico_JSONB {
+        <<JSONB Object>>
+        +AtualizacaoHistorico[] listaAtualizacoes
+        +Date dataAtualizacao
+        +String descricao
+        +String statusAnterior
+        +String statusNovo
+    }
+
+    class ResponsavelTecnico_JSONB {
+        <<JSONB Object>>
+        +String id
+        +String nome
+        +String email
+        +Number nivelAcesso
+    }
+
+    produtos_quimicos "1" --> "0..*" cargas_quimicas : "produto_id (FK)"
+    cargas_quimicas "1" *-- "0..*" DocumentoCarga_JSONB : "documentos (JSONB)"
+    cargas_quimicas "1" *-- "1" Historico_JSONB : "historico (JSONB)"
+    produtos_quimicos "1" *-- "1" Historico_JSONB : "historico (JSONB)"
+    cargas_quimicas "1" *-- "1" ResponsavelTecnico_JSONB : "responsavel_tecnico (JSONB)"
+```
+
+### 5.2 Diagrama Entidade-Relacionamento (DER)
 
 ```mermaid
 erDiagram
-    PRODUTOS_QUIMICOS ||--o{ CARGAS_QUIMICAS : "compoe (lista_produto)"
-    CARGAS_QUIMICAS ||--o{ DOCUMENTO_CARGA : "possui (lista_documentos)"
-    CARGAS_QUIMICAS ||--|{ HISTORICO_ATUALIZACAO : "registra (historico)"
-    PRODUTOS_QUIMICOS ||--|{ HISTORICO_ATUALIZACAO : "registra (historico_atualizacoes)"
-    USUARIO ||--o{ CARGAS_QUIMICAS : "responsavel_tecnico"
+    PRODUTOS_QUIMICOS ||--o{ CARGAS_QUIMICAS : "possui (produto_id FK)"
+    CARGAS_QUIMICAS ||--o{ DOCUMENTO_CARGA_JSONB : "agrega (documentos)"
+    CARGAS_QUIMICAS ||--|{ HISTORICO_JSONB : "registra (historico)"
+    PRODUTOS_QUIMICOS ||--|{ HISTORICO_JSONB : "registra (historico)"
+    RESPONSAVEL_TECNICO_JSONB ||--o{ CARGAS_QUIMICAS : "responsavel_tecnico"
 
     PRODUTOS_QUIMICOS {
         varchar id PK
@@ -179,23 +252,29 @@ erDiagram
         varchar classe_risco
         varchar grupo_compatibilidade
         boolean status_ativo
-        jsonb historico_atualizacoes
+        jsonb historico
+        timestamp data_criacao
+        timestamp data_atualizacao
     }
 
     CARGAS_QUIMICAS {
         varchar id PK
         varchar codigo_carga
         varchar status
+        varchar produto_id FK
+        numeric quantidade
         varchar unidade_medida
         varchar origem_carga
         varchar destino_carga
-        jsonb lista_produto
-        jsonb lista_documentos
-        jsonb historico
         jsonb responsavel_tecnico
+        jsonb documentos
+        jsonb historico
+        timestamp data_entrada
+        timestamp data_criacao
+        timestamp data_atualizacao
     }
 
-    DOCUMENTO_CARGA {
+    DOCUMENTO_CARGA_JSONB {
         string id
         string idCarga
         string tipoDocumento
@@ -203,14 +282,14 @@ erDiagram
         boolean validado
     }
 
-    HISTORICO_ATUALIZACAO {
+    HISTORICO_JSONB {
         datetime dataAtualizacao
         string descricao
         string statusAnterior
         string statusNovo
     }
 
-    USUARIO {
+    RESPONSAVEL_TECNICO_JSONB {
         string id
         string nome
         string email
@@ -218,14 +297,14 @@ erDiagram
     }
 ```
 
-### 5.2 Estratégia de Repositórios (Portas e Adaptadores)
+### 5.3 Estratégia de Repositórios (Portas e Adaptadores)
 
 Seguindo a **Clean Architecture**, os casos de uso dependem apenas das interfaces (Portas):
 - `IProdutoRepository` (`src/application/Ports/Repositories/RepositorieProduto.ts`)
 - `ICargaRepository` (`src/application/Ports/Repositories/RepositorieCarga.ts`)
 
 E o projeto conta com **duas implementações intercambiáveis**:
-1. **Repositório PostgreSQL (`RepositoriePostgres.ts`)**: Utilizado pela API em execução (`src/Composition/container.ts`), executando queries parametrizadas (`$1, $2...`) contra SQL Injection.
+1. **Repositório PostgreSQL (`RepositoriePostgres.ts`)**: Utilizado pela API em execução (`src/Composition/container.ts`), executando queries parametrizadas (`$1, $2...`) contra SQL Injection e realizando `JOIN` entre `cargas_quimicas` e `produtos_quimicos`.
 2. **Repositório em Memória (`RepositorieMemoria.ts`)**: Utilizado pela suíte de testes automatizados (`tests/quimiport.spec.ts`), permitindo execução rápida e isolada no CI/CD.
 
 ---
@@ -311,9 +390,9 @@ stateDiagram-v2
 | **UC-03** | `BuscarProdutoPorID` | `OPERADOR_PORTUARIO` | `GET /produtos-quimicos/:id` |
 | **UC-04** | `AtualizarProduto` | `GESTOR_OPERACIONAL` | `PUT /produtos-quimicos/:id` |
 | **UC-05** | `InativarProduto` | `GESTOR_OPERACIONAL` | `PATCH /produtos-quimicos/:id/inativar` |
-| **UC-06** | `RegistrarCarga` | `RESPONSAVEL_TECNICO` | `POST /cargas-quimicas` |
+| **UC-06** | `RegistrarCarga` | `OPERADOR_PORTUARIO` | `POST /cargas-quimicas` |
 | **UC-07** | `ListarCargas` | `OPERADOR_PORTUARIO` | `GET /cargas-quimicas` |
-| **UC-08** | `GetCargaID` | `OPERADOR_PORTUARIO` | `GET /cargas-quimicas/:id` |
+| **UC-08** | `GetCargaId` | `OPERADOR_PORTUARIO` | `GET /cargas-quimicas/:id` |
 | **UC-09** | `AtualizarStatusCarga` | `RESPONSAVEL_TECNICO` | `PATCH /cargas-quimicas/:id/status` |
 | **UC-10** | `BloquearCarga` | `RESPONSAVEL_TECNICO` | `PATCH /cargas-quimicas/:id/bloquear` |
 | **UC-11** | `LiberarCarga` | `RESPONSAVEL_TECNICO` | `PATCH /cargas-quimicas/:id/liberar` |
@@ -376,18 +455,17 @@ npm test
 ## 11. Containerização (Docker) e CI/CD (GitHub Actions)
 
 ### 11.1 Docker e Docker Compose
-- **`Dockerfile`**: Empacota a aplicação Node.js 20 Alpine, instala dependências e expõe a API na porta `35500`.
+- **`Dockerfile`**: Empacota a aplicação Node.js 22 Alpine, instala dependências e expõe a API na porta `35500`.
 - **`docker-compose.yml`**: Orquestra dois serviços em rede:
-  - `db` (`postgres:15-alpine`) com healthcheck (`pg_isready`) e volume persistente `pgdata`.
+  - `db` (`postgres:16-alpine`) com healthcheck (`pg_isready`).
   - `api` (aplicação QuimiPort) configurada com `depends_on: condition: service_healthy`.
 
 ### 11.2 Pipeline CI/CD (`.github/workflows/ci.yml`)
-Executado automaticamente a cada `push` ou `pull_request` nas branches `main` e `master`:
+Executado automaticamente a cada `push` ou `pull_request` na branch `main`:
 1. Faz checkout do código (`actions/checkout@v4`);
-2. Configura o ambiente Node.js 20 com cache de dependências (`actions/setup-node@v4`);
+2. Configura o ambiente Node.js 22 com cache de dependências (`actions/setup-node@v4`);
 3. Instala dependências (`npm install`);
-4. Valida a tipagem estática do projeto (`npx tsc --noEmit`);
-5. Executa os 12 testes automatizados do Jest (`npm test`).
+4. Executa os 12 testes automatizados do Jest (`npm test`).
 
 ---
 
@@ -409,14 +487,7 @@ Projeto_Pós_Tech_FIAP_FULLSTACK_Fase 1/
 │   ├── domain/                             # Camada de Domínio (Regras puras e Entidades)
 │   │   ├── Entities/
 │   │   │   ├── Aggregate Interfaces/
-│   │   │   │   ├── IDocumentoCarga.ts
-│   │   │   │   ├── IHistorico.ts
-│   │   │   │   └── IInspecao.ts
 │   │   │   ├── Domain Interfaces/
-│   │   │   │   ├── IAreaArmazenamento.ts
-│   │   │   │   ├── ICargaQuimica.ts
-│   │   │   │   ├── IProdutoQuimico.ts
-│   │   │   │   └── IUsuario.ts
 │   │   │   ├── AreaArmazenamento.ts
 │   │   │   ├── CargaQuimica.ts
 │   │   │   ├── DocumentoCarga.ts
@@ -440,19 +511,8 @@ Projeto_Pós_Tech_FIAP_FULLSTACK_Fase 1/
 │   │   │       ├── RepositorieProduto.ts
 │   │   │       └── RepositoriePostgres.ts
 │   │   └── Use Cases/
-│   │       ├── AtualizarProduto.ts
-│   │       ├── AtualizarStatusCarga.ts
-│   │       ├── BloquearCarga.ts
-│   │       ├── BuscarProdutoPorID.ts
-│   │       ├── CadastrarProduto.ts
-│   │       ├── CancelarCarga.ts
-│   │       ├── GetCargaID.ts
-│   │       ├── InativarProduto.ts
-│   │       ├── LiberarCarga.ts
-│   │       ├── ListarCargas.ts
-│   │       ├── ListarProdutos.ts
-│   │       ├── RegistrarCarga.ts
-│   │       ├── ValidarDocumentacao.ts
+│   │       ├── Produto/
+│   │       ├── Carga/
 │   │       └── ValidarNivelAcesso.ts
 │   │
 │   ├── adapters/                           # Camada de Adaptadores (Controllers e Repositórios)

@@ -26,7 +26,7 @@ Evoluir a proposta técnica e arquitetural concebida na **Fase 1** ([`docs/Desig
 
 ---
 
-## 3. Arquitetura Adotada
+## 3. Arquitetura Adotada e Decisões Técnicas
 
 O projeto adota **Clean Architecture** combinada com princípios de **Domain-Driven Design (DDD)**, garantindo que o núcleo de negócio (`domain` e `application`) permaneça independente de frameworks externos, banco de dados ou protocolo HTTP.
 
@@ -48,28 +48,172 @@ flowchart LR
 4. **`src/infrastructure` (Infraestrutura):** Contém a configuração do servidor Express (`app.ts`), rotas (`ProdutoRoutes`, `CargaRoutes`), especificação do Swagger UI (`swagger.ts`) e o pool de conexão com inicialização automática de tabelas no PostgreSQL (`connection.ts`).
 5. **`src/Composition` (Composition Root):** O arquivo `container.ts` realiza a **Injeção de Dependências**, conectando os repositórios PostgreSQL aos Casos de Uso e injetando-os nos Controllers.
 
+### Justificativa do Framework HTTP (Express) e do Banco de Dados (PostgreSQL):
+- **Por que Express?** O Express é minimalista e não impõe acoplamento às classes de negócio, permitindo aplicar a **Clean Architecture** pura em que as rotas e os controllers atuam apenas como adaptadores finos para os Casos de Uso.
+- **Por que PostgreSQL?** O domínio portuário exige forte integridade referencial entre `cargas_quimicas` e `produtos_quimicos` (garantida por Chave Estrangeira `produto_id REFERENCES produtos_quimicos(id)`), além de suporte nativo ao tipo `JSONB`, ideal para armazenar agregados de DDD (`documentos`, `historico` e `responsavel_tecnico`) com consistência transacional (ACID) e facilidade de evolução nas próximas fases.
+
 > 📄 **Documentação Arquitetural Detalhada:**
 > - [Documento de Design — Fase 1 (Modelagem Original)](./docs/DesignDocument.md)
 > - [Documento de Design — Fase 2 (Implementação Atualizada)](./docs/DesignDocument_Fase2.md)
 
 ---
 
-## 4. Tecnologias Utilizadas
+## 4. Modelagem do Banco de Dados (Diagramas UML e DER)
+
+A persistência em PostgreSQL (`src/infrastructure/database/connection.ts` e `RepositoriePostgres.ts`) é estruturada nas tabelas `produtos_quimicos` e `cargas_quimicas`:
+
+### 4.1 Diagrama UML de Classes/Tabelas do Banco de Dados (Modelo Físico + JSONB)
+
+```mermaid
+classDiagram
+    direction LR
+
+    class produtos_quimicos {
+        <<Table>>
+        +VARCHAR(100) id [PK]
+        +VARCHAR(255) nome [NOT NULL]
+        +TEXT descricao
+        +VARCHAR(100) codigo_onu [NOT NULL]
+        +VARCHAR(100) classe_risco [NOT NULL]
+        +VARCHAR(100) grupo_compatibilidade
+        +BOOLEAN status_ativo [DEFAULT TRUE]
+        +JSONB historico
+        +TIMESTAMP data_criacao
+        +TIMESTAMP data_atualizacao
+    }
+
+    class cargas_quimicas {
+        <<Table>>
+        +VARCHAR(100) id [PK]
+        +VARCHAR(100) codigo_carga [NOT NULL]
+        +VARCHAR(50) status [NOT NULL]
+        +VARCHAR(100) produto_id [FK -> produtos_quimicos.id]
+        +NUMERIC quantidade [NOT NULL, DEFAULT 1]
+        +VARCHAR(50) unidade_medida
+        +VARCHAR(255) origem_carga
+        +VARCHAR(255) destino_carga
+        +JSONB responsavel_tecnico [NOT NULL]
+        +JSONB documentos [DEFAULT '[]']
+        +JSONB historico
+        +TIMESTAMP data_entrada
+        +TIMESTAMP data_criacao
+        +TIMESTAMP data_atualizacao
+    }
+
+    class DocumentoCarga_JSONB {
+        <<JSONB Array Element>>
+        +String id
+        +String idCarga
+        +String tipoDocumento
+        +String urlDocumento
+        +Boolean validado
+    }
+
+    class Historico_JSONB {
+        <<JSONB Object>>
+        +AtualizacaoHistorico[] listaAtualizacoes
+        +Date dataAtualizacao
+        +String descricao
+        +String statusAnterior
+        +String statusNovo
+    }
+
+    class ResponsavelTecnico_JSONB {
+        <<JSONB Object>>
+        +String id
+        +String nome
+        +String email
+        +Number nivelAcesso
+    }
+
+    produtos_quimicos "1" --> "0..*" cargas_quimicas : "produto_id (FK)"
+    cargas_quimicas "1" *-- "0..*" DocumentoCarga_JSONB : "documentos (JSONB)"
+    cargas_quimicas "1" *-- "1" Historico_JSONB : "historico (JSONB)"
+    produtos_quimicos "1" *-- "1" Historico_JSONB : "historico (JSONB)"
+    cargas_quimicas "1" *-- "1" ResponsavelTecnico_JSONB : "responsavel_tecnico (JSONB)"
+```
+
+### 4.2 Diagrama Entidade-Relacionamento (DER)
+
+```mermaid
+erDiagram
+    PRODUTOS_QUIMICOS ||--o{ CARGAS_QUIMICAS : "possui (produto_id FK)"
+    CARGAS_QUIMICAS ||--o{ DOCUMENTO_CARGA_JSONB : "agrega (documentos)"
+    CARGAS_QUIMICAS ||--|{ HISTORICO_JSONB : "registra (historico)"
+    PRODUTOS_QUIMICOS ||--|{ HISTORICO_JSONB : "registra (historico)"
+    RESPONSAVEL_TECNICO_JSONB ||--o{ CARGAS_QUIMICAS : "responsavel_tecnico"
+
+    PRODUTOS_QUIMICOS {
+        varchar id PK
+        varchar nome
+        text descricao
+        varchar codigo_onu
+        varchar classe_risco
+        varchar grupo_compatibilidade
+        boolean status_ativo
+        jsonb historico
+        timestamp data_criacao
+        timestamp data_atualizacao
+    }
+
+    CARGAS_QUIMICAS {
+        varchar id PK
+        varchar codigo_carga
+        varchar status
+        varchar produto_id FK
+        numeric quantidade
+        varchar unidade_medida
+        varchar origem_carga
+        varchar destino_carga
+        jsonb responsavel_tecnico
+        jsonb documentos
+        jsonb historico
+        timestamp data_entrada
+        timestamp data_criacao
+        timestamp data_atualizacao
+    }
+
+    DOCUMENTO_CARGA_JSONB {
+        string id
+        string idCarga
+        string tipoDocumento
+        string urlDocumento
+        boolean validado
+    }
+
+    HISTORICO_JSONB {
+        datetime dataAtualizacao
+        string descricao
+        string statusAnterior
+        string statusNovo
+    }
+
+    RESPONSAVEL_TECNICO_JSONB {
+        string id
+        string nome
+        string email
+        int nivelAcesso
+    }
+```
+
+---
+
+## 5. Tecnologias Utilizadas
 
 | Tecnologia | Versão / Pacote | Finalidade no Projeto |
 |---|---|---|
 | **Node.js** | v20+ / v22 | Ambiente de execução JavaScript/TypeScript no servidor |
 | **TypeScript** | `^5.9.3` | Tipagem estática, interfaces e segurança em tempo de compilação |
-| **Express** | `^5.2.1` | Framework HTTP para construção das rotas, middlewares e API REST |
-| **PostgreSQL (`pg`)** | `^8.20.0` | Driver de conexão e persistência em banco de dados relacional PostgreSQL 16 |
+| **Express** | `^5.3.0` | Framework HTTP para construção das rotas, middlewares e API REST |
+| **PostgreSQL (`pg`)** | `^8.23.1` | Driver de conexão e persistência em banco de dados relacional PostgreSQL 16 |
 | **Swagger UI Express** | `^5.0.1` | Interface interativa para documentação e teste dos endpoints (OpenAPI 3.0) |
-| **Jest & ts-jest** | `^29.7.0` | Framework de testes automatizados unitários e de integração de regras de negócio |
+| **Jest & ts-jest** | `^30.5.2` / `^29.4.15` | Framework de testes automatizados unitários e de integração de regras de negócio |
 | **Docker & Docker Compose** | `postgres:16-alpine` / `node:22-alpine` | Containerização e orquestração da API e do banco de dados |
-| **GitHub Actions** | `ci.yml` | Integração Contínua (verificação de compilação e execução automática dos testes) |
+| **GitHub Actions** | `ci.yml` | Integração Contínua (instalação e execução automática dos testes) |
 
 ---
 
-## 5. Estrutura de Pastas
+## 6. Estrutura de Pastas
 
 ```text
 Projeto_Pós_Tech_FIAP_FULLSTACK_Fase 1/
@@ -111,19 +255,8 @@ Projeto_Pós_Tech_FIAP_FULLSTACK_Fase 1/
 │   │   │       ├── RepositorieProduto.ts
 │   │   │       └── RepositoriePostgres.ts
 │   │   └── Use Cases/
-│   │       ├── AtualizarProduto.ts
-│   │       ├── AtualizarStatusCarga.ts
-│   │       ├── BloquearCarga.ts
-│   │       ├── BuscarProdutoPorID.ts
-│   │       ├── CadastrarProduto.ts
-│   │       ├── CancelarCarga.ts
-│   │       ├── GetCargaID.ts
-│   │       ├── InativarProduto.ts
-│   │       ├── LiberarCarga.ts
-│   │       ├── ListarCargas.ts
-│   │       ├── ListarProdutos.ts
-│   │       ├── RegistrarCarga.ts
-│   │       ├── ValidarDocumentacao.ts
+│   │       ├── Produto/
+│   │       ├── Carga/
 │   │       └── ValidarNivelAcesso.ts
 │   │
 │   ├── adapters/                           # Camada de Adaptadores (Controllers e Repositório em Memória)
@@ -164,7 +297,7 @@ Projeto_Pós_Tech_FIAP_FULLSTACK_Fase 1/
 
 ---
 
-## 6. Pré-requisitos
+## 7. Pré-requisitos
 
 Antes de executar o projeto, certifique-se de ter instalado em sua máquina:
 
@@ -174,7 +307,7 @@ Antes de executar o projeto, certifique-se de ter instalado em sua máquina:
 
 ---
 
-## 7. Configuração de Variáveis de Ambiente
+## 8. Configuração de Variáveis de Ambiente
 
 A aplicação utiliza variáveis de ambiente para configurar a conexão com o banco de dados PostgreSQL em `src/infrastructure/database/connection.ts`.
 
@@ -200,7 +333,7 @@ DB_NAME=quimiport
 
 ---
 
-## 8. Instruções para Executar Localmente
+## 9. Instruções para Executar Localmente
 
 1. **Instale as dependências do projeto:**
    ```bash
@@ -223,7 +356,7 @@ DB_NAME=quimiport
 
 ---
 
-## 9. Instruções para Executar com Docker
+## 10. Instruções para Executar com Docker
 
 Para subir **toda a solução (Banco de Dados PostgreSQL + API QuimiPort)** de forma integrada com um único comando utilizando o `docker-compose.yml`:
 
@@ -245,7 +378,7 @@ Para subir **toda a solução (Banco de Dados PostgreSQL + API QuimiPort)** de f
 
 ---
 
-## 10. Instruções para Executar os Testes
+## 11. Instruções para Executar os Testes
 
 A suíte de testes automatizados foi construída com **Jest** e **ts-jest** no arquivo [`tests/quimiport.spec.ts`](./tests/quimiport.spec.ts).
 
@@ -277,7 +410,7 @@ npx tsc --noEmit
 
 ---
 
-## 11. Exemplos de Requisições da API
+## 12. Exemplos de Requisições da API
 
 Você pode testar todos os endpoints diretamente pelo navegador através do **Swagger UI**:
 👉 **`http://localhost:35500/api-docs`**
@@ -349,7 +482,7 @@ Você pode testar todos os endpoints diretamente pelo navegador através do **Sw
 
 ---
 
-## 12. Explicação Resumida das Regras de Negócio Implementadas
+## 13. Explicação Resumida das Regras de Negócio Implementadas
 
 ### Regras de Produto Químico:
 - **Obrigatoriedade de Dados:** Nenhum produto pode ser cadastrado sem `nome` ou sem uma `classeRisco` pertencente ao `enumClasseRisco`.
@@ -367,14 +500,20 @@ Você pode testar todos os endpoints diretamente pelo navegador através do **Sw
 
 ---
 
-## 13. Explicação da Pipeline de CI/CD
+## 14. Explicação da Pipeline de CI/CD
 
 O projeto conta com integração contínua configurada no GitHub Actions através do arquivo [`.github/workflows/ci.yml`](./.github/workflows/ci.yml).
 
-Sempre que um `push` ou `pull_request` é realizado nas branches `main` ou `master`, o workflow **`CI - QuimiPort API`** executa automaticamente em um runner Ubuntu (`ubuntu-latest`):
+Sempre que um `push` ou `pull_request` é realizado na branch `main`, o workflow **`QuimiPort CI Pipeline`** executa automaticamente em um runner Ubuntu (`ubuntu-latest`):
 
 1. **Checkout do código (`actions/checkout@v4`):** Baixa a versão atual do repositório;
-2. **Setup do Node.js 20 (`actions/setup-node@v4`):** Configura o ambiente Node.js com cache do `npm`;
+2. **Setup do Node.js 22 (`actions/setup-node@v4`):** Configura o ambiente Node.js com cache do `npm`;
 3. **Instalação de dependências (`npm install`):** Instala todos os pacotes do projeto;
-4. **Verificação de compilação e tipagem (`npx tsc --noEmit`):** Garante que não existem erros de TypeScript em nenhuma camada da arquitetura;
-5. **Execução dos Testes Automatizados (`npm test`):** Executa os 12 cenários obrigatórios no Jest, garantindo que nenhuma regra de negócio foi quebrada antes de aceitar a alteração.
+4. **Execução dos Testes Automatizados (`npm test`):** Executa os 12 cenários obrigatórios no Jest, garantindo que nenhuma regra de negócio foi quebrada antes de aceitar a alteração.
+
+---
+
+## 15. Integrantes do Grupo
+
+- **Repositório Oficial:** `https://github.com/feldmannmts/Projeto_P-s_Tech_FIAP_FULLSTACK_Fase-1`
+- **Curso:** Pós Tech FIAP — Full Stack Development
