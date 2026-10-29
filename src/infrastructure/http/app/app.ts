@@ -24,7 +24,7 @@ app.use((req, _res, next) => {
       next();
 });
 
-// 2. Middleware de Logs e Observabilidade Inicial (Requisito 10 do Edital)
+// 2. Middleware de Logs e Observabilidade Inicial
 app.use((req, res, next) => {
       const inicio = Date.now();
       res.on("finish", () => {
@@ -34,7 +34,7 @@ app.use((req, res, next) => {
       next();
 });
 
-// 3. Registro das Rotas Principais (Requisito 5 do Edital)
+// 3. Registro das Rotas Principais
 app.use("/produtos-quimicos", produtoRoutes);
 app.use("/cargas-quimicas", cargaRoutes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
